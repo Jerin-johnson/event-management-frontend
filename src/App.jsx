@@ -1,14 +1,7 @@
-import Card from "./components/card/Card";
+import Dashboard from "./layouts/Dashboard/Dashboard";
 
 function App() {
-  return (
-    <main style={{ padding: "2rem" }}>
-      <Card>
-        <h2>Profile</h2>
-        <p>Create and manage profiles.</p>
-      </Card>
-    </main>
-  );
+  return <Dashboard />;
 }
 
 export default App;
