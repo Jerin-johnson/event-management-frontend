@@ -1,9 +1,8 @@
 import { useState } from "react";
 import Card from "../Card/Card";
 import Select from "../Select/Select";
-
 import styles from "./EventList.module.css";
-import EventCard from "../eventListCard/EventCardList";
+import EventListCard from "../eventCardList/EventCardList";
 
 const TIMEZONE_OPTIONS = [
   { label: "Eastern Time (ET)", value: "America/New_York" },
@@ -25,7 +24,13 @@ const SAMPLE_EVENTS = [
 
 function EventList() {
   const [viewTimezone, setViewTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [events] = useState(SAMPLE_EVENTS);
+  const [events, setEvents] = useState(SAMPLE_EVENTS);
+
+  const handleUpdateEvent = (updatedEvent) => {
+    setEvents((prev) =>
+      prev.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev)),
+    );
+  };
 
   return (
     <Card>
@@ -47,7 +52,11 @@ function EventList() {
       ) : (
         <div className={styles.list}>
           {events.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventListCard
+              key={event.id}
+              event={event}
+              onUpdate={handleUpdateEvent}
+            />
           ))}
         </div>
       )}

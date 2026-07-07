@@ -1,7 +1,12 @@
 import { Users, Calendar, Clock, Pencil, FileText } from "lucide-react";
 import styles from "./EventCardList.module.css";
+import { useState } from "react";
+import EditEventModal from "../editEventModal/EditEventModal";
+import ViewLogsModal from "../viewEventLogModal/ViewEventLogModal";
 
 function EventCard({ event }) {
+  const [isEditOpen, setEditOpen] = useState(false);
+  const [isLogsOpen, setLogsOpen] = useState(false);
   return (
     <div className={styles.card}>
       <div className={styles.profiles}>
@@ -37,15 +42,31 @@ function EventCard({ event }) {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.actionBtn}>
+        <button className={styles.actionBtn} onClick={() => setEditOpen(true)}>
           <Pencil className={styles.actionIcon} />
           Edit
         </button>
-        <button className={styles.actionBtn}>
+        <button className={styles.actionBtn} onClick={() => setLogsOpen(true)}>
           <FileText className={styles.actionIcon} />
           View Logs
         </button>
       </div>
+
+      <EditEventModal
+        isOpen={isEditOpen}
+        onClose={() => setEditOpen(false)}
+        event={event}
+        onSave={(updated) => {
+          onUpdate(updated);
+          setEditOpen(false);
+        }}
+      />
+
+      <ViewLogsModal
+        isOpen={isLogsOpen}
+        onClose={() => setLogsOpen(false)}
+        logs={event.logs || []}
+      />
     </div>
   );
 }

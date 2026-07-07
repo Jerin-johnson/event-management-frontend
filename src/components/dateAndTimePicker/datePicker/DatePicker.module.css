@@ -5,6 +5,14 @@
   align-items: center;
 }
 
+.container :global(.react-datepicker-wrapper) {
+  width: 100%;
+}
+
+.container :global(.react-datepicker__input-container) {
+  width: 100%;
+}
+
 .icon {
   position: absolute;
   left: 1rem;
