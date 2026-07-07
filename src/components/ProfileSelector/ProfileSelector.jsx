@@ -1,23 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./ProfileSelector.module.css";
-import { ChevronsUpDown } from "lucide-react";
+import { CheckIcon, ChevronsUpDown, PlusIcon } from "lucide-react";
+import { Search } from "lucide-react";
 
 function ProfileSelector({
   isMultiSelect = false,
   selectedProfiles = [],
   setSelectedProfiles,
-  placeholder = "Select current profile",
+  placeholder = "Select profiles...",
+  controlWidthOfContainerClassName = "",
 }) {
   const [profiles, setProfiles] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdNewProfile, setIsAddNewProfile] = useState(false);
   const [search, setSearch] = useState("");
   const [newProfileName, setNewProfileName] = useState("");
+  const [hoveredId, setHoveredId] = useState(null);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
     function handleOutsideClick(e) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setIsOpen(false);
+        setIsAddNewProfile(false);
       }
     }
     document.addEventListener("mousedown", handleOutsideClick);
@@ -57,9 +62,9 @@ function ProfileSelector({
     } else {
       setSelectedProfiles((prev) => [...prev, newProfile]);
     }
+    setIsAddNewProfile(false);
   }
 
-  // Fixed display logic
   const displayText = isMultiSelect
     ? selectedProfiles.length > 0
       ? `${selectedProfiles.length} profiles selected`
@@ -67,8 +72,16 @@ function ProfileSelector({
     : selectedProfiles[0]?.name || placeholder;
 
   return (
-    <div className={styles.container} ref={wrapperRef}>
-      <button className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
+    <div
+      className={`${styles.container} ${controlWidthOfContainerClassName}`}
+      ref={wrapperRef}
+    >
+      <button
+        className={`${styles.trigger} ${
+          selectedProfiles.length > 0 ? styles.trigger_active : ""
+        }`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         <span>{displayText}</span>
         <span>
           <ChevronsUpDown className={styles.chevronsUpDown_icon} />
@@ -77,40 +90,69 @@ function ProfileSelector({
 
       {isOpen && (
         <div className={styles.dropdown}>
-          <input
-            className={styles.search}
-            placeholder="Search profiles..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className={styles.search_container}>
+            <Search className={styles.search_icon} />
+            <input
+              className={styles.search_input}
+              placeholder="Search profiles..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-          <div className={styles.list}>
+          <div className={styles.profile_list_container}>
+            {filteredProfiles.length === 0 && (
+              <div className={styles.noProfilesMessage}>
+                <p>No profiles found.</p>
+              </div>
+            )}
+
             {filteredProfiles.map((profile) => (
-              <button
+              <div
                 key={profile.id}
-                className={`${styles.item} ${
+                className={`${styles.profile_item} ${
                   selectedProfiles.some((p) => p.id === profile.id)
-                    ? styles.active
+                    ? styles.profile_active
                     : ""
-                }`}
+                }    ${hoveredId === profile.id ? styles.profile_hovered : ""}`}
+                onMouseEnter={() => setHoveredId(profile.id)}
                 onClick={() => toggleProfile(profile)}
               >
-                {selectedProfiles.some((p) => p.id === profile.id) && "✓ "}
-                {profile.name}
-              </button>
+                <span className={styles.profile_text}>
+                  {selectedProfiles.some((p) => p.id === profile.id) && (
+                    <CheckIcon className={styles.check_icon} />
+                  )}
+
+                  {profile.name}
+                </span>
+              </div>
             ))}
           </div>
 
-          <div className={styles.footer}>
-            <input
-              className={styles.addInput}
-              placeholder="Add new profile"
-              value={newProfileName}
-              onChange={(e) => setNewProfileName(e.target.value)}
-            />
-            <button className={styles.addButton} onClick={addNewProfile}>
-              Add
-            </button>
+          <div className={styles.addNewProfileContainer}>
+            {!isAdNewProfile && (
+              <div
+                className={styles.addNewProfileButton}
+                onClick={() => setIsAddNewProfile(!isAdNewProfile)}
+              >
+                <PlusIcon className={styles.plusIcon} />
+                <span>Add Profile</span>
+              </div>
+            )}
+
+            {isAdNewProfile && (
+              <div className={styles.addNewProfileInputContainer}>
+                <input
+                  className={styles.addNewProfileInput}
+                  placeholder="Add new profile"
+                  value={newProfileName}
+                  onChange={(e) => setNewProfileName(e.target.value)}
+                />
+                <button className={styles.addButton} onClick={addNewProfile}>
+                  Add
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

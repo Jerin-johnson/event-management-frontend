@@ -6,6 +6,9 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
+.controlProfileSelectorWidth {
+  max-width: 280px;
+}
 
 .header > div h1 {
   font-size: 2.1rem;

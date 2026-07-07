@@ -1,5 +1,5 @@
 import styles from "./Header.module.css";
-import ProfileSelector from "../ProfileSelector/ProfileSelector";
+import ProfileSelector from "../profileSelector/ProfileSelector";
 import { useState } from "react";
 
 function Header() {
@@ -16,6 +16,7 @@ function Header() {
         selectedProfiles={currentProfile}
         setSelectedProfiles={setCurrentProfile}
         placeholder="Select current profile"
+        controlWidthOfContainerClassName={styles.controlProfileSelectorWidth}
       />
     </header>
   );

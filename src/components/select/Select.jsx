@@ -1,4 +1,5 @@
 import styles from "./Select.module.css";
+import { ChevronsUpDown } from "lucide-react";
 
 function Select({
   label,
@@ -17,21 +18,25 @@ function Select({
         </label>
       )}
 
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className={styles.select}
-      >
-        <option value="">{placeholder}</option>
+      <div className={styles.selectWrapper}>
+        <select
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className={styles.select}
+        >
+          <option value="">{placeholder}</option>
 
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+
+        <ChevronsUpDown className={styles.icon_ChevronsUpDown} />
+      </div>
 
       {error && <span className={styles.error}>{error}</span>}
     </div>
