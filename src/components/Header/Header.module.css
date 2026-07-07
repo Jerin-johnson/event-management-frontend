@@ -3,11 +3,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.controlProfileSelectorWidth {
-  max-width: 280px;
 }
 
 .header > div h1 {
@@ -22,6 +17,14 @@
   color: #6b7280;
   margin: 0;
   font-size: 1rem;
+}
+
+.header_left_section {
+  flex: 3;
+}
+
+.header_right_section {
+  flex: 1;
 }
 
 @media (max-width: 768px) {

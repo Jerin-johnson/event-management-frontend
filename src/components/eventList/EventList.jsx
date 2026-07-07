@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Card from "../Card/Card";
-import Select from "../Select/Select";
 import styles from "./EventList.module.css";
 import EventListCard from "../eventCardList/EventCardList";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 
 const TIMEZONE_OPTIONS = [
   { label: "Eastern Time (ET)", value: "America/New_York" },
@@ -25,6 +25,8 @@ const SAMPLE_EVENTS = [
 function EventList() {
   const [viewTimezone, setViewTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [events, setEvents] = useState(SAMPLE_EVENTS);
+  const [selectedTimezone, setSelectedTimezone] = useState(TIMEZONE_OPTIONS[0]);
+  const [timezones, setTimezones] = useState(TIMEZONE_OPTIONS);
 
   const handleUpdateEvent = (updatedEvent) => {
     setEvents((prev) =>
@@ -38,10 +40,12 @@ function EventList() {
 
       <div className={styles.formGroup}>
         <label>View in Timezone</label>
-        <Select
-          options={TIMEZONE_OPTIONS}
-          value={viewTimezone}
-          onChange={setViewTimezone}
+        <Dropdown
+          options={timezones}
+          selected={selectedTimezone}
+          onChange={setSelectedTimezone}
+          placeholder="Select timezone"
+          isMulti={false}
         />
       </div>
 

@@ -1,15 +1,20 @@
 import { useState } from "react";
 import Card from "../Card/Card";
-import Select from "../Select/Select";
 import Button from "../Button/Button";
-import ProfileSelector from "../profileSelector/ProfileSelector";
 import styles from "./EventForm.module.css";
 import { ChevronsUpDown } from "lucide-react";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 
 function EventForm() {
+  const [profiles, setProfiles] = useState([]);
   const [selectedProfiles, setSelectedProfiles] = useState([]);
   const [startDate, setStartDate] = useState();
+  const [selectedTimezone, setSelectedTimezone] = useState();
+  const [timezones, setTimezones] = useState([
+    { label: "Eastern Time (ET)", value: "America/New_York" },
+    { label: "India (IST)", value: "Asia/Kolkata" },
+  ]);
   const [startTime, setStartTime] = useState("09:00");
   const [endDate, setEndDate] = useState();
   const [endTime, setEndTime] = useState("09:00");
@@ -21,20 +26,28 @@ function EventForm() {
       <div className={styles.form}>
         <div className={styles.formGroup}>
           <label>Profiles</label>
-          <ProfileSelector
-            isMultiSelect={true}
-            selectedProfiles={selectedProfiles}
-            setSelectedProfiles={setSelectedProfiles}
-            controlWidthOfDropdownClassName={styles.profileDropdownHalfWidth}
+          <Dropdown
+            options={profiles}
+            selected={selectedProfiles}
+            onChange={setSelectedProfiles}
+            placeholder="Select profiles..."
+            searchPlaceHolderValue="Search Profile..."
+            isMulti={true}
+            showAddNew={true}
+            onAddNew={(name) => {
+              const newProfile = { id: Date.now(), name };
+              setProfiles([...profiles, newProfile]);
+              setSelectedProfiles([...selectedProfiles, newProfile]);
+            }}
           />
         </div>
 
-        <Select
-          label="Timezone"
-          options={[
-            { label: "Eastern Time (ET)", value: "America/New_York" },
-            { label: "India (IST)", value: "Asia/Kolkata" },
-          ]}
+        <Dropdown
+          options={timezones}
+          selected={selectedTimezone}
+          onChange={setSelectedTimezone}
+          placeholder="Select timezone"
+          isMulti={false}
         />
 
         <DateTimeInput

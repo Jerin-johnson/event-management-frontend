@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
-import Select from "../Select/Select";
-import ProfileSelector from "../profileSelector/ProfileSelector";
 import Button from "../Button/Button";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import styles from "./EditEventModal.module.css";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 
 const TIMEZONE_OPTIONS = [
   { label: "Eastern Time (ET)", value: "America/New_York" },
@@ -18,6 +17,8 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
   const [startTime, setStartTime] = useState("09:00");
   const [endDate, setEndDate] = useState();
   const [endTime, setEndTime] = useState("09:00");
+  const [selectedProfiles, setSelectedProfiles] = useState([]);
+  const [newProfileName, setNewProfileName] = useState("");
 
   useEffect(() => {
     if (event) {
@@ -61,18 +62,27 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
     >
       <div className={styles.formGroup}>
         <label>Profiles</label>
-        <ProfileSelector
-          isMultiSelect={true}
-          selectedProfiles={profiles}
-          setSelectedProfiles={setProfiles}
+        <Dropdown
+          options={profiles}
+          selected={selectedProfiles}
+          onChange={setSelectedProfiles}
+          placeholder="Select profiles..."
+          isMulti={true}
+          showAddNew={true}
+          onAddNew={(name) => {
+            const newProfile = { id: Date.now(), name };
+            setProfiles([...profiles, newProfile]);
+            setSelectedProfiles([...selectedProfiles, newProfile]);
+          }}
         />
       </div>
 
-      <Select
-        label="Timezone"
+      <Dropdown
         options={TIMEZONE_OPTIONS}
-        value={timezone}
+        selected={timezone}
         onChange={setTimezone}
+        placeholder="Select timezone"
+        isMulti={false}
       />
 
       <DateTimeInput
