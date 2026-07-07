@@ -1,5 +1,4 @@
 import styles from "./Dashboard.module.css";
-
 import Header from "../../components/header/Header";
 import EventForm from "../../components/eventForm/EventForm";
 import EventList from "../../components/eventList/EventList";
@@ -7,13 +6,14 @@ import EventList from "../../components/eventList/EventList";
 function Dashboard() {
   return (
     <main className={styles.dashboard}>
-      <Header />
+      <div className={styles.container}>
+        <Header />
 
-      <section className={styles.content}>
-        <EventForm />
-
-        <EventList />
-      </section>
+        <section className={styles.content}>
+          <EventForm />
+          <EventList />
+        </section>
+      </div>
     </main>
   );
 }

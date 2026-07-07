@@ -4,6 +4,7 @@ import Select from "../Select/Select";
 import Button from "../Button/Button";
 import ProfileSelector from "../ProfileSelector/ProfileSelector";
 import styles from "./EventForm.module.css";
+import DateTimeInput from "../dateTimeInput/DateTimeInput";
 
 function EventForm() {
   const [selectedProfiles, setSelectedProfiles] = useState([]);
@@ -30,21 +31,8 @@ function EventForm() {
           ]}
         />
 
-        <div className={styles.formGroup}>
-          <label>Start Date & Time</label>
-          <div className={styles.dateTimeRow}>
-            <input type="date" className={styles.input} />
-            <input type="time" className={styles.input} defaultValue="09:00" />
-          </div>
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>End Date & Time</label>
-          <div className={styles.dateTimeRow}>
-            <input type="date" className={styles.input} />
-            <input type="time" className={styles.input} defaultValue="09:00" />
-          </div>
-        </div>
+        <DateTimeInput label="Start Date & Time" />
+        <DateTimeInput label="End Date & Time" />
 
         <Button variant="primary" className={styles.createBtn}>
           + Create Event

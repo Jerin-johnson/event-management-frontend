@@ -1,8 +1,6 @@
 .dashboard {
   background-color: #f8f9fa;
-  min-height: 100vh;
-  padding: 1.5rem 1.5rem 2rem;
-  margin: 0;
+  padding: 2.5rem 2rem;
   font-family:
     system-ui,
     -apple-system,
@@ -10,24 +8,26 @@
     "Segoe UI",
     Roboto,
     sans-serif;
+}
+
+.container {
+  max-width: 1200px;
   width: 100%;
-  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .content {
   display: flex;
   gap: 2rem;
-  max-width: 1480px;
-  margin: 0 auto;
   align-items: stretch;
+  margin-top: 0.5rem;
 }
 
 .content > * {
   flex: 1;
-  min-width: 340px;
+  min-width: 300px;
 }
 
-/* Responsive */
 @media (max-width: 1100px) {
   .content {
     flex-direction: column;
@@ -37,6 +37,6 @@
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 1rem 1rem 1.5rem;
+    padding: 1.5rem 1.25rem;
   }
 }

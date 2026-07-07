@@ -23,8 +23,9 @@
   color: #374151;
 }
 
-.formGroup :global(.container) {
+.formGroup > div.container {
   width: 100% !important;
+  min-width: auto;
 }
 
 .input {
@@ -45,16 +46,8 @@
   flex: 1;
 }
 
-.input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 1rem;
-}
-
 .createBtn {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
   padding: 1rem;
   font-size: 1.1rem;
   border-radius: 10px;

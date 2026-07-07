@@ -1,6 +1,7 @@
 .container {
   position: relative;
-  width: 260px;
+  width: 100%;
+  max-width: 320px;
 }
 
 .trigger {
@@ -76,22 +77,21 @@
 
 .footer {
   display: flex;
-
   gap: 8px;
-
   padding: 10px;
-
   border-top: 1px solid #eee;
 }
 
 .addInput {
   flex: 1;
-
   border: 1px solid #ddd;
-
   border-radius: 6px;
-
   padding: 10px;
+}
+
+.chevronsUpDown_icon {
+  width: 16px;
+  height: 16px;
 }
 
 .addButton {

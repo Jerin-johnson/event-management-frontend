@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./ProfileSelector.module.css";
+import { ChevronsUpDown } from "lucide-react";
 
 function ProfileSelector({
   isMultiSelect = false,
@@ -38,6 +39,7 @@ function ProfileSelector({
         setSelectedProfiles([...selectedProfiles, profile]);
       }
     } else {
+      // Single Select (Header)
       setSelectedProfiles([profile]);
       setIsOpen(false);
     }
@@ -45,32 +47,32 @@ function ProfileSelector({
 
   function addNewProfile() {
     if (!newProfileName.trim()) return;
-    const newProfile = {
-      id: Date.now(),
-      name: newProfileName.trim(),
-    };
+    const newProfile = { id: Date.now(), name: newProfileName.trim() };
     setProfiles((prev) => [...prev, newProfile]);
     setNewProfileName("");
     setSearch("");
 
-    // if (!isMultiSelect) {
-    //   setSelectedProfiles([newProfile]);
-    // } else {
-    //   setSelectedProfiles((prev) => [...prev, newProfile]);
-    // }
+    if (!isMultiSelect) {
+      setSelectedProfiles([newProfile]);
+    } else {
+      setSelectedProfiles((prev) => [...prev, newProfile]);
+    }
   }
 
+  // Fixed display logic
   const displayText = isMultiSelect
     ? selectedProfiles.length > 0
       ? `${selectedProfiles.length} profiles selected`
-      : "Select profiles..."
+      : placeholder
     : selectedProfiles[0]?.name || placeholder;
 
   return (
     <div className={styles.container} ref={wrapperRef}>
       <button className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
         <span>{displayText}</span>
-        <span>⌄</span>
+        <span>
+          <ChevronsUpDown className={styles.chevronsUpDown_icon} />
+        </span>
       </button>
 
       {isOpen && (
@@ -86,7 +88,11 @@ function ProfileSelector({
             {filteredProfiles.map((profile) => (
               <button
                 key={profile.id}
-                className={`${styles.item} ${selectedProfiles.some((p) => p.id === profile.id) ? styles.active : ""}`}
+                className={`${styles.item} ${
+                  selectedProfiles.some((p) => p.id === profile.id)
+                    ? styles.active
+                    : ""
+                }`}
                 onClick={() => toggleProfile(profile)}
               >
                 {selectedProfiles.some((p) => p.id === profile.id) && "✓ "}

@@ -1,0 +1,22 @@
+.title {
+  margin-bottom: 1.8rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.4rem;
+}
+
+.formGroup label {
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.empty {
+  color: #6b7280;
+}
