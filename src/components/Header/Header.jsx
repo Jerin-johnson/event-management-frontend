@@ -4,6 +4,7 @@ import { useState } from "react";
 
 function Header() {
   const [currentProfile, setCurrentProfile] = useState([]);
+
   return (
     <header className={styles.header}>
       <div>
@@ -12,7 +13,7 @@ function Header() {
       </div>
 
       <ProfileSelector
-        isMultiSelect={false} // Single slect for header
+        isMultiSelect={false}
         selectedProfiles={currentProfile}
         setSelectedProfiles={setCurrentProfile}
         placeholder="Select current profile"

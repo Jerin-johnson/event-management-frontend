@@ -21,6 +21,7 @@ function EventForm() {
             isMultiSelect={true}
             selectedProfiles={selectedProfiles}
             setSelectedProfiles={setSelectedProfiles}
+            controlWidthOfDropdownClassName={styles.profileDropdownHalfWidth}
           />
         </div>
 

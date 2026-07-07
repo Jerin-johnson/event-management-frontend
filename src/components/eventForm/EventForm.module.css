@@ -52,3 +52,7 @@
   font-size: 1.1rem;
   border-radius: 10px;
 }
+
+.profileDropdownHalfWidth {
+  width: 50% !important;
+}

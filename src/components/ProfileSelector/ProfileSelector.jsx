@@ -9,6 +9,7 @@ function ProfileSelector({
   setSelectedProfiles,
   placeholder = "Select profiles...",
   controlWidthOfContainerClassName = "",
+  controlWidthOfDropdownClassName = "",
 }) {
   const [profiles, setProfiles] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +90,9 @@ function ProfileSelector({
       </button>
 
       {isOpen && (
-        <div className={styles.dropdown}>
+        <div
+          className={`${styles.dropdown} ${controlWidthOfDropdownClassName}`}
+        >
           <div className={styles.search_container}>
             <Search className={styles.search_icon} />
             <input
