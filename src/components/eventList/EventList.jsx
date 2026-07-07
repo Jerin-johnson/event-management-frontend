@@ -24,7 +24,9 @@ function EventList() {
         />
       </div>
 
-      <p className={styles.empty}>No events found.</p>
+      <div className={styles.emptyState}>
+        <p className={styles.empty}>No events found.</p>
+      </div>
     </Card>
   );
 }
