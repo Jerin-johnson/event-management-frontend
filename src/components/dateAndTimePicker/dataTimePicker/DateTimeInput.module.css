@@ -1,0 +1,20 @@
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.dateTimeRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.dateTimeRow > * {
+  flex: 1;
+}

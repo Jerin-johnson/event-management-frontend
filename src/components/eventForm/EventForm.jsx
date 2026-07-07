@@ -4,11 +4,15 @@ import Select from "../Select/Select";
 import Button from "../Button/Button";
 import ProfileSelector from "../profileSelector/ProfileSelector";
 import styles from "./EventForm.module.css";
-import DateTimeInput from "../dateTimeInput/DateTimeInput";
 import { ChevronsUpDown } from "lucide-react";
+import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 
 function EventForm() {
   const [selectedProfiles, setSelectedProfiles] = useState([]);
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState("09:00");
+  const [endDate, setEndDate] = useState();
+  const [endTime, setEndTime] = useState("09:00");
 
   return (
     <Card>
@@ -33,8 +37,20 @@ function EventForm() {
           ]}
         />
 
-        <DateTimeInput label="Start Date & Time" />
-        <DateTimeInput label="End Date & Time" />
+        <DateTimeInput
+          label="Start Date & Time"
+          date={startDate}
+          time={startTime}
+          onDateChange={setStartDate}
+          onTimeChange={setStartTime}
+        />
+        <DateTimeInput
+          label="End Date & Time"
+          date={endDate}
+          time={endTime}
+          onDateChange={setEndDate}
+          onTimeChange={setEndTime}
+        />
 
         <Button variant="primary" className={styles.createBtn}>
           + Create Event
