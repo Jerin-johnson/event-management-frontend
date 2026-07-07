@@ -6,8 +6,7 @@ function Header() {
     <header className={styles.header}>
       <div>
         <h1>Event Management</h1>
-
-        <p>Create and manage events across multiple timezones</p>
+        <p>Create and manage events across multiple timezones.</p>
       </div>
 
       <ProfileSelector />

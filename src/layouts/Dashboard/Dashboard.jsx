@@ -1,8 +1,8 @@
 import styles from "./Dashboard.module.css";
 
-import Header from "../../components/Header/Header";
-import EventForm from "../../components/EventForm/EventForm";
-import EventList from "../../components/EventList/EventList";
+import Header from "../../components/header/Header";
+import EventForm from "../../components/eventForm/EventForm";
+import EventList from "../../components/eventList/EventList";
 
 function Dashboard() {
   return (

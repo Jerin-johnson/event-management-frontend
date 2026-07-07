@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./ProfileSelector.module.css";
 
 function ProfileSelector() {
-  const [profiles, setProfiles] = useState([
-    { id: 1, name: "anuj" },
-    { id: 2, name: "alpha" },
-  ]);
+  const [profiles, setProfiles] = useState([]);
 
   const [selectedProfile, setSelectedProfile] = useState(profiles[0]);
 
