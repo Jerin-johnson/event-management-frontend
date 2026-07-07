@@ -1,0 +1,61 @@
+.title {
+  margin-bottom: 1.8rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formGroup :global(.container) {
+  width: 100% !important;
+}
+
+.input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+}
+
+.dateTimeRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.dateTimeRow .input {
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.createBtn {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+}

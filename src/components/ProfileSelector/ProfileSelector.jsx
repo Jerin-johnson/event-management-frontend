@@ -1,64 +1,75 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./ProfileSelector.module.css";
 
-function ProfileSelector() {
+function ProfileSelector({
+  isMultiSelect = false,
+  selectedProfiles = [],
+  setSelectedProfiles,
+  placeholder = "Select current profile",
+}) {
   const [profiles, setProfiles] = useState([]);
-
-  const [selectedProfile, setSelectedProfile] = useState(profiles[0]);
-
   const [isOpen, setIsOpen] = useState(false);
-
   const [search, setSearch] = useState("");
-
-  const [newProfile, setNewProfile] = useState("");
-
+  const [newProfileName, setNewProfileName] = useState("");
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    function handleOutsideClick(event) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+    function handleOutsideClick(e) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleOutsideClick);
-
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  const filteredProfiles = profiles.filter((profile) =>
-    profile.name.toLowerCase().includes(search.toLowerCase()),
+  const filteredProfiles = profiles.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  function addProfile() {
-    const value = newProfile.trim();
-
-    if (!value) return;
-
-    const profile = {
-      id: Date.now(),
-      name: value,
-    };
-
-    setProfiles((prev) => [...prev, profile]);
-
-    setSelectedProfile(profile);
-
-    setNewProfile("");
-
-    setSearch("");
+  function toggleProfile(profile) {
+    if (isMultiSelect) {
+      const isSelected = selectedProfiles.some((p) => p.id === profile.id);
+      if (isSelected) {
+        setSelectedProfiles(
+          selectedProfiles.filter((p) => p.id !== profile.id),
+        );
+      } else {
+        setSelectedProfiles([...selectedProfiles, profile]);
+      }
+    } else {
+      setSelectedProfiles([profile]);
+      setIsOpen(false);
+    }
   }
+
+  function addNewProfile() {
+    if (!newProfileName.trim()) return;
+    const newProfile = {
+      id: Date.now(),
+      name: newProfileName.trim(),
+    };
+    setProfiles((prev) => [...prev, newProfile]);
+    setNewProfileName("");
+    setSearch("");
+
+    // if (!isMultiSelect) {
+    //   setSelectedProfiles([newProfile]);
+    // } else {
+    //   setSelectedProfiles((prev) => [...prev, newProfile]);
+    // }
+  }
+
+  const displayText = isMultiSelect
+    ? selectedProfiles.length > 0
+      ? `${selectedProfiles.length} profiles selected`
+      : "Select profiles..."
+    : selectedProfiles[0]?.name || placeholder;
 
   return (
     <div className={styles.container} ref={wrapperRef}>
-      <button
-        className={styles.trigger}
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        <span>
-          {selectedProfile ? selectedProfile.name : "Select current profile"}
-        </span>
-
+      <button className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
+        <span>{displayText}</span>
         <span>⌄</span>
       </button>
 
@@ -66,7 +77,7 @@ function ProfileSelector() {
         <div className={styles.dropdown}>
           <input
             className={styles.search}
-            placeholder="Search current profile..."
+            placeholder="Search profiles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -75,14 +86,10 @@ function ProfileSelector() {
             {filteredProfiles.map((profile) => (
               <button
                 key={profile.id}
-                className={`${styles.item} ${
-                  selectedProfile?.id === profile.id ? styles.active : ""
-                }`}
-                onClick={() => {
-                  setSelectedProfile(profile);
-                  setIsOpen(false);
-                }}
+                className={`${styles.item} ${selectedProfiles.some((p) => p.id === profile.id) ? styles.active : ""}`}
+                onClick={() => toggleProfile(profile)}
               >
+                {selectedProfiles.some((p) => p.id === profile.id) && "✓ "}
                 {profile.name}
               </button>
             ))}
@@ -91,12 +98,11 @@ function ProfileSelector() {
           <div className={styles.footer}>
             <input
               className={styles.addInput}
-              placeholder="Profile name"
-              value={newProfile}
-              onChange={(e) => setNewProfile(e.target.value)}
+              placeholder="Add new profile"
+              value={newProfileName}
+              onChange={(e) => setNewProfileName(e.target.value)}
             />
-
-            <button className={styles.addButton} onClick={addProfile}>
+            <button className={styles.addButton} onClick={addNewProfile}>
               Add
             </button>
           </div>

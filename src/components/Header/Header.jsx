@@ -1,7 +1,9 @@
 import styles from "./Header.module.css";
 import ProfileSelector from "../ProfileSelector/ProfileSelector";
+import { useState } from "react";
 
 function Header() {
+  const [currentProfile, setCurrentProfile] = useState([]);
   return (
     <header className={styles.header}>
       <div>
@@ -9,7 +11,12 @@ function Header() {
         <p>Create and manage events across multiple timezones.</p>
       </div>
 
-      <ProfileSelector />
+      <ProfileSelector
+        isMultiSelect={false} // Single slect for header
+        selectedProfiles={currentProfile}
+        setSelectedProfiles={setCurrentProfile}
+        placeholder="Select current profile"
+      />
     </header>
   );
 }

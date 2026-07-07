@@ -1,7 +1,7 @@
 .dashboard {
   background-color: #f8f9fa;
-  min-height: 100vh; /* Full screen height */
-  padding: 1.5rem 1.5rem 2rem; /* Reduced padding */
+  min-height: 100vh;
+  padding: 1.5rem 1.5rem 2rem;
   margin: 0;
   font-family:
     system-ui,
