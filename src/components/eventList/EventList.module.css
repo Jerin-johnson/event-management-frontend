@@ -28,3 +28,9 @@
 .empty {
   color: #6b7280;
 }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
