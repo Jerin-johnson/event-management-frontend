@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function useIntersectionObserver(callback, enabled) {
+export default function useIntersectionObserver({ onIntersect, enabled }) {
   const observer = useRef();
 
   const lastElementRef = (node) => {
@@ -10,7 +10,7 @@ export default function useIntersectionObserver(callback, enabled) {
 
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        callback();
+        onIntersect?.();
       }
     });
 

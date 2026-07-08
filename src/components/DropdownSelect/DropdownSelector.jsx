@@ -2,6 +2,9 @@ import styles from "./DropdownSelector.module.css";
 import { CheckIcon, ChevronsUpDown, PlusIcon, Search } from "lucide-react";
 import useDropdown from "../../hooks/useDropdown";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
+import ErrorState from "../uiState/ErrorState";
+import LoadingState from "../uiState/LoadingState";
+import EmptyState from "../uiState/EmptyState";
 
 function Dropdown({
   fetchNextPage,
@@ -24,6 +27,11 @@ function Dropdown({
   isLoading = false,
   setSearch,
   search = "",
+  loadingText = "Loading...",
+  loadingMoreText = "Loading more...",
+  emptyText = "No results found.",
+  errorText = "Something went wrong.",
+  retryButtonText = "Retry",
 }) {
   const {
     wrapperRef,
@@ -80,43 +88,47 @@ function Dropdown({
           </div>
 
           <div className={styles.optionsList}>
-            {error && (
-              <div className={styles.error}>
-                <p>Unable to load profiles.</p>
-
-                <button onClick={refetch}>Retry</button>
-              </div>
-            )}
-            {isLoading ? (
-              <div className={styles.loading}>Loading profiles...</div>
+            {error ? (
+              <ErrorState
+                text={errorText}
+                retryButtonText={retryButtonText}
+                onRetry={refetch}
+              />
+            ) : isLoading ? (
+              <LoadingState text={loadingText} />
             ) : options.length === 0 ? (
-              <div className={styles.noResults}>No results found</div>
+              <EmptyState text={emptyText} />
             ) : (
-              options.map((item, index) => {
-                const isLast = index === options.length - 1;
-                const isSelected = selectedItems.some(
-                  (selectedItem) => selectedItem[valueKey] === item[valueKey],
-                );
+              <>
+                {options.map((item, index) => {
+                  const isLast = index === options.length - 1;
 
-                return (
-                  <div
-                    ref={isLast ? lastItemRef : null}
-                    key={item[valueKey]}
-                    className={`${styles.option} ${
-                      isSelected ? styles.optionSelected : ""
-                    }`}
-                    onClick={() => toggleOption(item)}
-                  >
-                    <span className={styles.optionText}>
-                      {isSelected && isMulti && (
-                        <CheckIcon className={styles.checkIcon} />
-                      )}
+                  const isSelected = selectedItems.some(
+                    (selectedItem) => selectedItem[valueKey] === item[valueKey],
+                  );
 
-                      {item[labelKey]}
-                    </span>
-                  </div>
-                );
-              })
+                  return (
+                    <div
+                      key={item[valueKey]}
+                      ref={isLast ? lastItemRef : null}
+                      className={`${styles.option} ${
+                        isSelected ? styles.optionSelected : ""
+                      }`}
+                      onClick={() => toggleOption(item)}
+                    >
+                      <span className={styles.optionText}>
+                        {isSelected && isMulti && (
+                          <CheckIcon className={styles.checkIcon} />
+                        )}
+
+                        {item[labelKey]}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                {isFetchingNextPage && <LoadingState text={loadingMoreText} />}
+              </>
             )}
           </div>
 

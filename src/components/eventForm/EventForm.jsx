@@ -6,6 +6,7 @@ import { ChevronsUpDown } from "lucide-react";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
+import { useProfileSelector } from "../../hooks/useProfileSelector";
 
 function EventForm() {
   const {
@@ -18,6 +19,19 @@ function EventForm() {
     submitEvent,
   } = useEventForm();
 
+  const {
+    search,
+    setSearch,
+    profiles,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    createProfile,
+  } = useProfileSelector();
+
   return (
     <Card>
       <h2 className={styles.title}>Create Event</h2>
@@ -26,18 +40,30 @@ function EventForm() {
         <div className={styles.formGroup}>
           <label>Profiles</label>
           <Dropdown
-            options={formData.profiles}
+            isLoading={isLoading}
+            search={search}
+            setSearch={setSearch}
+            error={error}
+            refetch={refetch}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            options={profiles}
             selected={formData.selectedProfiles}
             onChange={(value) => updateField("selectedProfiles", value)}
             placeholder="Select profiles..."
             searchPlaceHolderValue="Search Profile..."
             isMulti={true}
             showAddNew={true}
-            onAddNew={addProfile}
+            onAddNew={(name) => createProfile({ name })}
             labelKey="name"
-            valueKey="id"
+            valueKey="_id"
+            loadingText="Loading Profiles..."
+            loadingMoreText="Loading More Profiles..."
+            emptyText="No Profiles Found"
+            errorText="Unable to load profiles."
+            retryButtonText="Retry"
           />
-
           {errors.selectedProfiles && (
             <span className={styles.error}>{errors.selectedProfiles}</span>
           )}

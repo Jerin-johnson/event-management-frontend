@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-
-import { getUserProfiles } from "../api/userProfile.api";
+import { useEffect, useMemo } from "react";
+import { getUserProfiles } from "../services/UserProfile";
+import toast from "react-hot-toast";
 
 export function useUserProfiles(search) {
   const query = useInfiniteQuery({
@@ -18,6 +18,12 @@ export function useUserProfiles(search) {
     getNextPageParam: (lastPage) =>
       lastPage.pagination.hasMore ? lastPage.pagination.nextCursor : undefined,
   });
+
+  useEffect(() => {
+    if (query.error) {
+      toast.error(query.error.message || "Unable to load profiles");
+    }
+  }, [query.error]);
 
   const profiles = useMemo(() => {
     return query.data?.pages.flatMap((page) => page.profiles) ?? [];

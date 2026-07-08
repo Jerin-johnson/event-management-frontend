@@ -6,15 +6,17 @@ import useDebounce from "../../hooks/useDebounce";
 import { setCurrentProfile } from "../../store/slice/UserProfileSlice";
 import { useCreateUserProfile } from "../../hooks/useCreateUserProfile";
 import { useUserProfiles } from "../../hooks/useUserProfiles";
+import { useProfileSelector } from "../../hooks/useProfileSelector";
 
 function Header() {
   const dispatch = useDispatch();
-
-  const [search, setSearch] = useState("");
-
-  const debouncedSearch = useDebounce(search, 300);
+  const currentProfile = useSelector(
+    (state) => state.userProfile.currentProfile,
+  );
 
   const {
+    search,
+    setSearch,
     profiles,
     isLoading,
     error,
@@ -22,13 +24,8 @@ function Header() {
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = useUserProfiles(debouncedSearch);
-
-  const { mutateAsync: createProfile, isPending } = useCreateUserProfile();
-
-  const currentProfile = useSelector(
-    (state) => state.userProfile.currentProfile,
-  );
+    createProfile,
+  } = useProfileSelector();
 
   return (
     <header className={styles.header}>
@@ -57,6 +54,11 @@ function Header() {
           labelKey="name"
           valueKey="_id"
           onAddNew={(name) => createProfile({ name })}
+          loadingText="Loading Profiles..."
+          loadingMoreText="Loading More Profiles..."
+          emptyText="No Profiles Found"
+          errorText="Unable to load profiles."
+          retryButtonText="Retry"
         />
       </div>
     </header>
