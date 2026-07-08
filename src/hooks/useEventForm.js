@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { validateEvent } from "../validation/EventValidation";
+import { formatDateTime } from "../utils/Day";
 
 const INITIAL_FORM = {
   profiles: [],
@@ -12,7 +13,7 @@ const INITIAL_FORM = {
   endTime: "09:00",
 };
 
-export default function useEventForm() {
+export default function useEventForm({ currentProfile, createEventMutation }) {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,19 +70,23 @@ export default function useEventForm() {
     try {
       setIsSubmitting(true);
 
-      // -------------------------
-      // later with API later
-      // await createEvent(formData)
-      // -------------------------
+      const payload = {
+        profiles: formData.selectedProfiles.map((profile) => profile._id),
+        timezone: formData.selectedTimezone.value,
+        startDateTime: formatDateTime(formData.startDate, formData.startTime),
+        endDateTime: formatDateTime(formData.endDate, formData.endTime),
+        createdBy: currentProfile._id,
+      };
 
-      console.log("Submitting Event:", formData);
+      await createEventMutation(payload);
+
+      console.log("Submitting Event:", formData, payload);
       toast.success("Event created successfully!");
 
       resetForm();
     } catch (error) {
       console.error(error);
-
-      toast.error("Failed to create event.");
+      toast.error(error.message || "Failed to create event.");
     } finally {
       setIsSubmitting(false);
     }
