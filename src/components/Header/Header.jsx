@@ -36,7 +36,7 @@ function Header() {
 
       <div className={styles.header_right_section}>
         <Dropdown
-          isLoading={isLoading || isPending}
+          isLoading={isLoading}
           search={search}
           setSearch={setSearch}
           error={error}

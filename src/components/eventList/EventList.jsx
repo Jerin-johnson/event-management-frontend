@@ -1,32 +1,38 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "../Card/Card";
 import styles from "./EventList.module.css";
 import EventListCard from "../eventCardList/EventCardList";
 import Dropdown from "../DropdownSelect/DropdownSelector";
-
-const TIMEZONE_OPTIONS = [
-  { label: "Eastern Time (ET)", value: "America/New_York" },
-  { label: "India (IST)", value: "Asia/Kolkata" },
-];
-
-const SAMPLE_EVENTS = [
-  {
-    id: 1,
-    profiles: ["anuj", "alpha"],
-    startDate: "Oct 14, 2025",
-    startTime: "11:30 PM",
-    endDate: "Oct 16, 2025",
-    endTime: "11:30 PM",
-    createdAt: "Oct 11, 2025 at 03:56 PM",
-    updatedAt: "Oct 11, 2025 at 03:56 PM",
-  },
-];
+import { useTimeZones } from "../../hooks/useGetTimeZone";
 
 function EventList() {
-  const [viewTimezone, setViewTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [events, setEvents] = useState(SAMPLE_EVENTS);
-  const [selectedTimezone, setSelectedTimezone] = useState(TIMEZONE_OPTIONS[0]);
-  const [timezones, setTimezones] = useState(TIMEZONE_OPTIONS);
+  const [events, setEvents] = useState([]);
+  const [selectedTimezone, setSelectedTimezone] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const {
+    data: timezones = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useTimeZones();
+
+  console.log("the timezone", timezones);
+
+  useEffect(() => {
+    if (!selectedTimezone && timezones.length > 0) {
+      setSelectedTimezone(timezones[0]);
+    }
+  }, [timezones, selectedTimezone]);
+
+  const filteredTimezones = useMemo(() => {
+    if (!search.trim()) return timezones;
+
+    return timezones.filter((timezone) =>
+      timezone.label.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [search, timezones]);
 
   const handleUpdateEvent = (updatedEvent) => {
     setEvents((prev) =>
@@ -41,11 +47,20 @@ function EventList() {
       <div className={styles.formGroup}>
         <label>View in Timezone</label>
         <Dropdown
-          options={timezones}
+          options={filteredTimezones}
           selected={selectedTimezone}
           onChange={setSelectedTimezone}
-          placeholder="Select timezone"
-          isMulti={false}
+          search={search}
+          setSearch={setSearch}
+          isLoading={isLoading}
+          error={isError ? error : null}
+          refetch={refetch}
+          loadingText="Loading Timezones..."
+          emptyText="No Timezones Found"
+          errorText="Unable to load timezones."
+          retryButtonText="Retry"
+          placeholder="Select Timezone"
+          searchPlaceHolderValue="Search Timezone..."
           labelKey="label"
           valueKey="value"
         />

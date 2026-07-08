@@ -7,17 +7,19 @@ import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
+import { useTimeZones } from "../../hooks/useGetTimeZone";
 
 function EventForm() {
   const {
     formData,
     errors,
     isSubmitting,
-    timezones,
     updateField,
     addProfile,
     submitEvent,
   } = useEventForm();
+
+  const { data: timezones = [] } = useTimeZones();
 
   const {
     search,

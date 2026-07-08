@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { validateEvent } from "../validation/EventValidation";
-import { TIMEZONES } from "../constants/TimeZone";
 
 const INITIAL_FORM = {
   profiles: [],
@@ -92,7 +91,6 @@ export default function useEventForm() {
     formData,
     errors,
     isSubmitting,
-    timezones: TIMEZONES,
     updateField,
     addProfile,
     submitEvent,

@@ -9,3 +9,11 @@
   color: #374151;
   font-size: 0.9rem;
 }
+
+.error {
+  display: block;
+  margin-top: 6px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+}

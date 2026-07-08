@@ -1,48 +1,33 @@
-import { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import styles from "./EditEventModal.module.css";
 import Dropdown from "../DropdownSelect/DropdownSelector";
-
-const TIMEZONE_OPTIONS = [
-  { label: "Eastern Time (ET)", value: "America/New_York" },
-  { label: "India (IST)", value: "Asia/Kolkata" },
-];
+import useEditEventForm from "../../hooks/useEditEventForm";
+import { useProfileSelector } from "../../hooks/useProfileSelector";
 
 function EditEventModal({ isOpen, onClose, event, onSave }) {
-  const [profiles, setProfiles] = useState([]);
-  const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [startDate, setStartDate] = useState();
-  const [startTime, setStartTime] = useState("09:00");
-  const [endDate, setEndDate] = useState();
-  const [endTime, setEndTime] = useState("09:00");
-  const [selectedProfiles, setSelectedProfiles] = useState([]);
-  const [newProfileName, setNewProfileName] = useState("");
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    timezones,
+    updateField,
+    submitEvent,
+  } = useEditEventForm(event, onSave);
 
-  useEffect(() => {
-    if (event) {
-      setProfiles(event.profiles || []);
-      setTimezone(event.timezone || TIMEZONE_OPTIONS[0].value);
-      setStartDate(event.startDate);
-      setStartTime(event.startTime || "09:00");
-      setEndDate(event.endDate);
-      setEndTime(event.endTime || "09:00");
-    }
-  }, [event]);
-
-  const handleUpdate = () => {
-    onSave({
-      ...event,
-      profiles,
-      timezone,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      updatedAt: new Date().toLocaleString(),
-    });
-  };
+  const {
+    search,
+    setSearch,
+    profiles,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    createProfile,
+  } = useProfileSelector();
 
   return (
     <Modal
@@ -51,11 +36,15 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
       title="Edit Event"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update Event
+          <Button
+            variant="primary"
+            onClick={submitEvent}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : "Update Event"}
           </Button>
         </>
       }
@@ -63,47 +52,76 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
       <div className={styles.formGroup}>
         <label>Profiles</label>
         <Dropdown
+          isLoading={isLoading}
+          search={search}
+          setSearch={setSearch}
+          error={error}
+          refetch={refetch}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
           options={profiles}
-          selected={selectedProfiles}
-          onChange={setSelectedProfiles}
+          selected={formData.selectedProfiles}
+          onChange={(value) => updateField("selectedProfiles", value)}
           placeholder="Select profiles..."
+          searchPlaceHolderValue="Search Profile..."
           isMulti={true}
           showAddNew={true}
+          onAddNew={(name) => createProfile({ name })}
           labelKey="name"
-          valueKey="id"
-          onAddNew={(name) => {
-            const newProfile = { id: Date.now(), name };
-            setProfiles([...profiles, newProfile]);
-            setSelectedProfiles([...selectedProfiles, newProfile]);
-          }}
+          valueKey="_id"
+          loadingText="Loading Profiles..."
+          loadingMoreText="Loading More Profiles..."
+          emptyText="No Profiles Found"
+          errorText="Unable to load profiles."
+          retryButtonText="Retry"
         />
+        {errors.selectedProfiles && (
+          <span className={styles.error}>{errors.selectedProfiles}</span>
+        )}
       </div>
 
-      <Dropdown
-        options={TIMEZONE_OPTIONS}
-        selected={timezone}
-        onChange={setTimezone}
-        placeholder="Select timezone"
-        isMulti={false}
-        labelKey="label"
-        valueKey="value"
-      />
+      <div className={styles.formGroup}>
+        <label>Timezone</label>
+        <Dropdown
+          options={timezones}
+          selected={formData.selectedTimezone}
+          onChange={(value) => updateField("selectedTimezone", value)}
+          placeholder="Select timezone"
+          isMulti={false}
+          labelKey="label"
+          valueKey="value"
+        />
+        {errors.selectedTimezone && (
+          <span className={styles.error}>{errors.selectedTimezone}</span>
+        )}
+      </div>
 
-      <DateTimeInput
-        label="Start Date & Time"
-        date={startDate}
-        time={startTime}
-        onDateChange={setStartDate}
-        onTimeChange={setStartTime}
-      />
+      <div className={styles.formGroup}>
+        <DateTimeInput
+          label="Start Date & Time"
+          date={formData.startDate}
+          time={formData.startTime}
+          onDateChange={(value) => updateField("startDate", value)}
+          onTimeChange={(value) => updateField("startTime", value)}
+        />
+        {errors.startDate && (
+          <span className={styles.error}>{errors.startDate}</span>
+        )}
+      </div>
 
-      <DateTimeInput
-        label="End Date & Time"
-        date={endDate}
-        time={endTime}
-        onDateChange={setEndDate}
-        onTimeChange={setEndTime}
-      />
+      <div className={styles.formGroup}>
+        <DateTimeInput
+          label="End Date & Time"
+          date={formData.endDate}
+          time={formData.endTime}
+          onDateChange={(value) => updateField("endDate", value)}
+          onTimeChange={(value) => updateField("endTime", value)}
+        />
+        {errors.endDate && (
+          <span className={styles.error}>{errors.endDate}</span>
+        )}
+      </div>
     </Modal>
   );
 }
