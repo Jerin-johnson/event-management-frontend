@@ -1,11 +1,34 @@
+import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "../DropdownSelect/DropdownSelector";
 import styles from "./Header.module.css";
 import { useState } from "react";
+import useDebounce from "../../hooks/useDebounce";
+import { setCurrentProfile } from "../../store/slice/UserProfileSlice";
+import { useCreateUserProfile } from "../../hooks/useCreateUserProfile";
+import { useUserProfiles } from "../../hooks/useUserProfiles";
 
 function Header() {
-  const [currentProfile, setCurrentProfile] = useState([]);
-  const [profiles, setProfiles] = useState([]);
-  const [selectedProfiles, setSelectedProfiles] = useState([]);
+  const dispatch = useDispatch();
+
+  const [search, setSearch] = useState("");
+
+  const debouncedSearch = useDebounce(search, 300);
+
+  const {
+    profiles,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useUserProfiles(debouncedSearch);
+
+  const { mutateAsync: createProfile, isPending } = useCreateUserProfile();
+
+  const currentProfile = useSelector(
+    (state) => state.userProfile.currentProfile,
+  );
 
   return (
     <header className={styles.header}>
@@ -16,20 +39,24 @@ function Header() {
 
       <div className={styles.header_right_section}>
         <Dropdown
+          isLoading={isLoading || isPending}
+          search={search}
+          setSearch={setSearch}
+          error={error}
+          refetch={refetch}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
           options={profiles}
-          selected={selectedProfiles}
-          onChange={setSelectedProfiles}
+          selected={currentProfile}
+          onChange={(profile) => dispatch(setCurrentProfile(profile))}
           placeholder="Select Current Profile..."
           searchPlaceHolderValue="Search Profile..."
           isMulti={false}
           showAddNew={true}
           labelKey="name"
-          valueKey="id"
-          onAddNew={(name) => {
-            const newProfile = { id: Date.now(), name };
-            setProfiles([...profiles, newProfile]);
-            setSelectedProfiles([...selectedProfiles, newProfile]);
-          }}
+          valueKey="_id"
+          onAddNew={(name) => createProfile({ name })}
         />
       </div>
     </header>

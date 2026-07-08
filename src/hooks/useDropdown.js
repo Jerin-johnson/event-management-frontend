@@ -12,7 +12,6 @@ export default function useDropdown({
   valueKey = "id",
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const [newItemName, setNewItemName] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
 
@@ -24,7 +23,6 @@ export default function useDropdown({
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
-    setSearch("");
     setShowAddInput(false);
     setNewItemName("");
   }, []);
@@ -34,18 +32,6 @@ export default function useDropdown({
   const toggleDropdown = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
-
-  const filteredOptions = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
-
-    if (!searchValue) return options;
-
-    return options.filter((item) =>
-      String(item[labelKey] ?? "")
-        .toLowerCase()
-        .includes(searchValue),
-    );
-  }, [options, search, labelKey]);
 
   const toggleOption = useCallback(
     (item) => {
@@ -73,30 +59,17 @@ export default function useDropdown({
     [isMulti, selectedItems, onChange, valueKey, closeDropdown],
   );
 
-  const handleAddNew = useCallback(() => {
+  const handleAddNew = useCallback(async () => {
     const value = newItemName.trim();
-
     if (!value) return;
-
-    if (!onAddNew) return;
-
-    const alreadyExists = options.some(
-      (item) =>
-        String(item[labelKey]).toLowerCase().trim() === value.toLowerCase(),
-    );
-
-    if (alreadyExists) {
+    try {
+      await onAddNew(value);
       setNewItemName("");
       setShowAddInput(false);
-      return;
+    } catch (error) {
+      console.log(error);
     }
-
-    onAddNew(value);
-
-    setNewItemName("");
-    setShowAddInput(false);
-    setSearch("");
-  }, [newItemName, onAddNew, options, labelKey]);
+  }, [newItemName, onAddNew]);
 
   const displayText = useMemo(() => {
     if (isMulti) {
@@ -110,24 +83,16 @@ export default function useDropdown({
 
   return {
     wrapperRef,
-
     isOpen,
-    search,
     newItemName,
     showAddInput,
-
-    filteredOptions,
     displayText,
     selectedItems,
-
-    setSearch,
     setNewItemName,
     setShowAddInput,
-
     toggleDropdown,
     toggleOption,
     handleAddNew,
-
     closeDropdown,
   };
 }

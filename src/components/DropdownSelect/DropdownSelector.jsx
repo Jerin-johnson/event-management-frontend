@@ -1,8 +1,14 @@
 import styles from "./DropdownSelector.module.css";
 import { CheckIcon, ChevronsUpDown, PlusIcon, Search } from "lucide-react";
 import useDropdown from "../../hooks/useDropdown";
+import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 
 function Dropdown({
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+  error,
+  refetch,
   options = [],
   selected = [],
   onChange,
@@ -15,17 +21,17 @@ function Dropdown({
   className = "",
   dropdownClassName = "",
   searchPlaceHolderValue = "Search...",
+  isLoading = false,
+  setSearch,
+  search = "",
 }) {
   const {
     wrapperRef,
     isOpen,
-    search,
     newItemName,
     showAddInput,
-    filteredOptions,
     displayText,
     selectedItems,
-    setSearch,
     setNewItemName,
     setShowAddInput,
     toggleDropdown,
@@ -42,7 +48,10 @@ function Dropdown({
     valueKey,
   });
 
-  console.log(filteredOptions);
+  const lastItemRef = useIntersectionObserver({
+    enabled: hasNextPage && !isFetchingNextPage,
+    onIntersect: fetchNextPage,
+  });
 
   return (
     <div ref={wrapperRef} className={`${styles.container} ${className}`}>
@@ -71,33 +80,44 @@ function Dropdown({
           </div>
 
           <div className={styles.optionsList}>
-            {filteredOptions.length === 0 && (
-              <div className={styles.noResults}>No results found</div>
+            {error && (
+              <div className={styles.error}>
+                <p>Unable to load profiles.</p>
+
+                <button onClick={refetch}>Retry</button>
+              </div>
             )}
+            {isLoading ? (
+              <div className={styles.loading}>Loading profiles...</div>
+            ) : options.length === 0 ? (
+              <div className={styles.noResults}>No results found</div>
+            ) : (
+              options.map((item, index) => {
+                const isLast = index === options.length - 1;
+                const isSelected = selectedItems.some(
+                  (selectedItem) => selectedItem[valueKey] === item[valueKey],
+                );
 
-            {filteredOptions.map((item) => {
-              const isSelected = selectedItems.some(
-                (selectedItem) => selectedItem[valueKey] === item[valueKey],
-              );
+                return (
+                  <div
+                    ref={isLast ? lastItemRef : null}
+                    key={item[valueKey]}
+                    className={`${styles.option} ${
+                      isSelected ? styles.optionSelected : ""
+                    }`}
+                    onClick={() => toggleOption(item)}
+                  >
+                    <span className={styles.optionText}>
+                      {isSelected && isMulti && (
+                        <CheckIcon className={styles.checkIcon} />
+                      )}
 
-              return (
-                <div
-                  key={item[valueKey]}
-                  className={`${styles.option} ${
-                    isSelected ? styles.optionSelected : ""
-                  }`}
-                  onClick={() => toggleOption(item)}
-                >
-                  <span className={styles.optionText}>
-                    {isSelected && isMulti && (
-                      <CheckIcon className={styles.checkIcon} />
-                    )}
-
-                    {item[labelKey]}
-                  </span>
-                </div>
-              );
-            })}
+                      {item[labelKey]}
+                    </span>
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {showAddNew && (
@@ -113,6 +133,7 @@ function Dropdown({
               ) : (
                 <div className={styles.addNewInputContainer}>
                   <input
+                    disabled={isLoading}
                     autoFocus
                     className={styles.addNewInput}
                     placeholder="New Profile"
@@ -128,9 +149,10 @@ function Dropdown({
                   <button
                     type="button"
                     className={styles.addButton}
+                    disabled={isLoading}
                     onClick={handleAddNew}
                   >
-                    Add
+                    {isLoading ? "Adding..." : "Add"}
                   </button>
                 </div>
               )}

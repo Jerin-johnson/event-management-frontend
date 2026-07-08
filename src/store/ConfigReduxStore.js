@@ -3,6 +3,8 @@ import userProfileReducer from "./slice/UserProfileSlice";
 
 export const store = configureStore({
   reducer: {
-    profile: userProfileReducer,
+    userProfile: userProfileReducer,
   },
 });
+
+export default store;
