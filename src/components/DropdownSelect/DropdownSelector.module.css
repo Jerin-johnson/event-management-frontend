@@ -18,6 +18,12 @@
   transition: all 0.2s ease;
 }
 
+.trigger:hover {
+  background: #6c63ff;
+  border-color: #6c63ff;
+  color: white;
+}
+
 .triggerActive {
   background: #6c63ff;
   border-color: #6c63ff;

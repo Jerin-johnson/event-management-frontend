@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
 import styles from "./DropdownSelector.module.css";
 import { CheckIcon, ChevronsUpDown, PlusIcon, Search } from "lucide-react";
+import useDropdown from "../../hooks/useDropdown";
 
 function Dropdown({
   options = [],
@@ -16,70 +16,53 @@ function Dropdown({
   dropdownClassName = "",
   searchPlaceHolderValue = "Search...",
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [newItemName, setNewItemName] = useState("");
-  const [hoveredId, setHoveredId] = useState(null);
-  const wrapperRef = useRef(null);
+  const {
+    wrapperRef,
+    isOpen,
+    search,
+    newItemName,
+    showAddInput,
+    filteredOptions,
+    displayText,
+    selectedItems,
+    setSearch,
+    setNewItemName,
+    setShowAddInput,
+    toggleDropdown,
+    toggleOption,
+    handleAddNew,
+  } = useDropdown({
+    options,
+    selected,
+    onChange,
+    placeholder,
+    isMulti,
+    onAddNew,
+    labelKey,
+    valueKey,
+  });
 
-  const filteredOptions = options.filter((item) =>
-    item[labelKey]?.toLowerCase().includes(search.toLowerCase()),
-  );
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        setIsOpen(false);
-        setNewItemName("");
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const toggleOption = (item) => {
-    if (isMulti) {
-      const isSelected = selected.some((s) => s[valueKey] === item[valueKey]);
-      if (isSelected) {
-        onChange(selected.filter((s) => s[valueKey] !== item[valueKey]));
-      } else {
-        onChange([...selected, item]);
-      }
-    } else {
-      onChange([item]);
-      setIsOpen(false);
-    }
-  };
-
-  const handleAddNew = () => {
-    if (!newItemName.trim() || !onAddNew) return;
-    onAddNew(newItemName.trim());
-    setNewItemName("");
-    setSearch("");
-  };
-
-  const displayText = isMulti
-    ? selected.length > 0
-      ? `${selected.length} profiles selected`
-      : placeholder
-    : selected[0]?.[labelKey] || placeholder;
+  console.log(filteredOptions);
 
   return (
-    <div className={`${styles.container} ${className}`} ref={wrapperRef}>
+    <div ref={wrapperRef} className={`${styles.container} ${className}`}>
       <button
-        className={`${styles.trigger} ${selected.length > 0 ? styles.triggerActive : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+        className={`${styles.trigger}`}
+        onClick={toggleDropdown}
       >
         <span>{displayText}</span>
+
         <ChevronsUpDown className={styles.chevron} />
       </button>
 
       {isOpen && (
         <div className={`${styles.dropdown} ${dropdownClassName}`}>
-          {/* Search */}
           <div className={styles.searchContainer}>
             <Search className={styles.searchIcon} />
+
             <input
+              autoFocus
               className={styles.searchInput}
               placeholder={searchPlaceHolderValue}
               value={search}
@@ -93,22 +76,23 @@ function Dropdown({
             )}
 
             {filteredOptions.map((item) => {
-              const isSelected = selected.some(
-                (s) => s[valueKey] === item[valueKey],
+              const isSelected = selectedItems.some(
+                (selectedItem) => selectedItem[valueKey] === item[valueKey],
               );
+
               return (
                 <div
                   key={item[valueKey]}
                   className={`${styles.option} ${
                     isSelected ? styles.optionSelected : ""
-                  } ${hoveredId === item[valueKey] ? styles.optionHovered : ""}`}
-                  onMouseEnter={() => setHoveredId(item[valueKey])}
+                  }`}
                   onClick={() => toggleOption(item)}
                 >
                   <span className={styles.optionText}>
                     {isSelected && isMulti && (
                       <CheckIcon className={styles.checkIcon} />
                     )}
+
                     {item[labelKey]}
                   </span>
                 </div>
@@ -118,10 +102,10 @@ function Dropdown({
 
           {showAddNew && (
             <div className={styles.addNewSection}>
-              {!newItemName ? (
+              {!showAddInput ? (
                 <div
                   className={styles.addNewButton}
-                  onClick={() => setNewItemName(" ")}
+                  onClick={() => setShowAddInput(true)}
                 >
                   <PlusIcon className={styles.plusIcon} />
                   Add New
@@ -129,13 +113,23 @@ function Dropdown({
               ) : (
                 <div className={styles.addNewInputContainer}>
                   <input
+                    autoFocus
                     className={styles.addNewInput}
-                    placeholder="New profile name"
+                    placeholder="New Profile"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddNew()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleAddNew();
+                      }
+                    }}
                   />
-                  <button className={styles.addButton} onClick={handleAddNew}>
+
+                  <button
+                    type="button"
+                    className={styles.addButton}
+                    onClick={handleAddNew}
+                  >
                     Add
                   </button>
                 </div>

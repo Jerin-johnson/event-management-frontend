@@ -46,6 +46,8 @@ function EventList() {
           onChange={setSelectedTimezone}
           placeholder="Select timezone"
           isMulti={false}
+          labelKey="label"
+          valueKey="value"
         />
       </div>
 

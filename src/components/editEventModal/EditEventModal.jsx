@@ -69,6 +69,8 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
           placeholder="Select profiles..."
           isMulti={true}
           showAddNew={true}
+          labelKey="name"
+          valueKey="id"
           onAddNew={(name) => {
             const newProfile = { id: Date.now(), name };
             setProfiles([...profiles, newProfile]);
@@ -83,6 +85,8 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
         onChange={setTimezone}
         placeholder="Select timezone"
         isMulti={false}
+        labelKey="label"
+        valueKey="value"
       />
 
       <DateTimeInput

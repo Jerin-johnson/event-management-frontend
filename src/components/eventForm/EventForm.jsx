@@ -5,19 +5,18 @@ import styles from "./EventForm.module.css";
 import { ChevronsUpDown } from "lucide-react";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import Dropdown from "../DropdownSelect/DropdownSelector";
+import useEventForm from "../../hooks/useEventForm";
 
 function EventForm() {
-  const [profiles, setProfiles] = useState([]);
-  const [selectedProfiles, setSelectedProfiles] = useState([]);
-  const [startDate, setStartDate] = useState();
-  const [selectedTimezone, setSelectedTimezone] = useState();
-  const [timezones, setTimezones] = useState([
-    { label: "Eastern Time (ET)", value: "America/New_York" },
-    { label: "India (IST)", value: "Asia/Kolkata" },
-  ]);
-  const [startTime, setStartTime] = useState("09:00");
-  const [endDate, setEndDate] = useState();
-  const [endTime, setEndTime] = useState("09:00");
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    timezones,
+    updateField,
+    addProfile,
+    submitEvent,
+  } = useEventForm();
 
   return (
     <Card>
@@ -27,46 +26,75 @@ function EventForm() {
         <div className={styles.formGroup}>
           <label>Profiles</label>
           <Dropdown
-            options={profiles}
-            selected={selectedProfiles}
-            onChange={setSelectedProfiles}
+            options={formData.profiles}
+            selected={formData.selectedProfiles}
+            onChange={(value) => updateField("selectedProfiles", value)}
             placeholder="Select profiles..."
             searchPlaceHolderValue="Search Profile..."
             isMulti={true}
             showAddNew={true}
-            onAddNew={(name) => {
-              const newProfile = { id: Date.now(), name };
-              setProfiles([...profiles, newProfile]);
-              setSelectedProfiles([...selectedProfiles, newProfile]);
-            }}
+            onAddNew={addProfile}
+            labelKey="name"
+            valueKey="id"
           />
+
+          {errors.selectedProfiles && (
+            <span className={styles.error}>{errors.selectedProfiles}</span>
+          )}
         </div>
 
-        <Dropdown
-          options={timezones}
-          selected={selectedTimezone}
-          onChange={setSelectedTimezone}
-          placeholder="Select timezone"
-          isMulti={false}
-        />
+        <div className={styles.formGroup}>
+          <label>Timezone</label>
 
-        <DateTimeInput
-          label="Start Date & Time"
-          date={startDate}
-          time={startTime}
-          onDateChange={setStartDate}
-          onTimeChange={setStartTime}
-        />
-        <DateTimeInput
-          label="End Date & Time"
-          date={endDate}
-          time={endTime}
-          onDateChange={setEndDate}
-          onTimeChange={setEndTime}
-        />
+          <Dropdown
+            options={timezones}
+            selected={formData.selectedTimezone}
+            onChange={(value) => updateField("selectedTimezone", value)}
+            placeholder="Select timezone"
+            labelKey="label"
+            valueKey="value"
+          />
 
-        <Button variant="primary" className={styles.createBtn}>
-          + Create Event
+          {errors.selectedTimezone && (
+            <span className={styles.error}>{errors.selectedTimezone}</span>
+          )}
+        </div>
+
+        <div className={styles.formGroup}>
+          <DateTimeInput
+            label="Start Date & Time"
+            date={formData.startDate}
+            time={formData.startTime}
+            onDateChange={(value) => updateField("startDate", value)}
+            onTimeChange={(value) => updateField("startTime", value)}
+          />
+
+          {errors.startDate && (
+            <span className={styles.error}>{errors.startDate}</span>
+          )}
+        </div>
+
+        <div className={styles.formGroup}>
+          <DateTimeInput
+            label="End Date & Time"
+            date={formData.endDate}
+            time={formData.endTime}
+            onDateChange={(value) => updateField("endDate", value)}
+            onTimeChange={(value) => updateField("endTime", value)}
+          />
+
+          {errors.endDate && (
+            <span className={styles.error}>{errors.endDate}</span>
+          )}
+        </div>
+
+        <Button
+          variant="primary"
+          className={styles.createBtn}
+          onClick={submitEvent}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Creating..." : "+ Create Event"}
         </Button>
       </div>
     </Card>
