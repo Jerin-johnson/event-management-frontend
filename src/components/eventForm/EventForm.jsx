@@ -8,6 +8,7 @@ import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
+import { useSelector } from "react-redux";
 
 function EventForm() {
   const {

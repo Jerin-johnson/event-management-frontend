@@ -1,39 +1,74 @@
-.empty {
-  text-align: center;
-  color: #6b7280;
-  padding: 2rem 0;
-  font-size: 0.95rem;
-}
-
 .logList {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 16px;
+  max-height: 420px;
+  overflow-y: auto;
 }
 
 .logItem {
-  background: #f9fafb;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  padding: 0.85rem 1rem;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .timestamp {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.updatedBy {
+  font-size: 14px;
+  color: #374151;
+}
+
+.divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin-bottom: 12px;
+}
+
+.changeRow {
+  margin-bottom: 14px;
+}
+
+.changeRow:last-child {
+  margin-bottom: 0;
+}
+
+.field {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.values {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.oldValue {
+  color: #6b7280;
+}
+
+.arrow {
+  font-weight: bold;
   color: #9ca3af;
-  margin-bottom: 0.35rem;
 }
 
-.clockIcon {
-  width: 13px;
-  height: 13px;
-}
-
-.message {
-  font-size: 0.92rem;
-  color: #1f2937;
-  font-weight: 500;
+.newValue {
+  color: #111827;
+  font-weight: 600;
 }

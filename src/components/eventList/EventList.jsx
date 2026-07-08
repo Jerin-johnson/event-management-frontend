@@ -4,9 +4,10 @@ import styles from "./EventList.module.css";
 import EventListCard from "../eventCardList/EventCardList";
 import Dropdown from "../DropdownSelect/DropdownSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
-
+import { useSelector } from "react-redux";
+import { useUserEvents } from "../../hooks/useUserEvents";
+import dayjs from "../../utils/Day";
 function EventList() {
-  const [events, setEvents] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -17,8 +18,6 @@ function EventList() {
     error,
     refetch,
   } = useTimeZones();
-
-  console.log("the timezone", timezones);
 
   useEffect(() => {
     if (!selectedTimezone && timezones.length > 0) {
@@ -39,6 +38,50 @@ function EventList() {
       prev.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev)),
     );
   };
+
+  const currentProfile = useSelector(
+    (state) => state.userProfile.currentProfile,
+  );
+
+  const {
+    data: events = [],
+    isLoading: eventsLoading,
+    error: eventsError,
+  } = useUserEvents(currentProfile?._id);
+
+  console.log("the events is", events);
+
+  const formattedEvents = useMemo(() => {
+    if (!selectedTimezone) return [];
+
+    return events.map((event) => {
+      const start = dayjs.utc(event.startDateTime).tz(selectedTimezone.value);
+
+      const end = dayjs.utc(event.endDateTime).tz(selectedTimezone.value);
+
+      return {
+        ...event,
+        id: event._id,
+        profiles: event.profiles.map((p) => p.name),
+
+        startDate: start.format("DD MMM YYYY"),
+        startTime: start.format("hh:mm A"),
+
+        endDate: end.format("DD MMM YYYY"),
+        endTime: end.format("hh:mm A"),
+
+        createdAt: dayjs
+          .utc(event.createdAt)
+          .tz(selectedTimezone.value)
+          .format("DD MMM YYYY hh:mm A"),
+
+        updatedAt: dayjs
+          .utc(event.updatedAt)
+          .tz(selectedTimezone.value)
+          .format("DD MMM YYYY hh:mm A"),
+      };
+    });
+  }, [events, selectedTimezone]);
 
   return (
     <Card>
@@ -66,16 +109,17 @@ function EventList() {
         />
       </div>
 
-      {events.length === 0 ? (
+      {formattedEvents.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.empty}>No events found.</p>
         </div>
       ) : (
         <div className={styles.list}>
-          {events.map((event) => (
+          {formattedEvents.map((event) => (
             <EventListCard
               key={event.id}
               event={event}
+              selectedTimezone={selectedTimezone}
               onUpdate={handleUpdateEvent}
             />
           ))}

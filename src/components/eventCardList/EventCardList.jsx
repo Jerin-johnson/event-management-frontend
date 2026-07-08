@@ -4,9 +4,11 @@ import { useState } from "react";
 import EditEventModal from "../editEventModal/EditEventModal";
 import ViewLogsModal from "../viewEventLogModal/ViewEventLogModal";
 
-function EventCard({ event }) {
+function EventCard({ event, selectedTimezone }) {
   const [isEditOpen, setEditOpen] = useState(false);
   const [isLogsOpen, setLogsOpen] = useState(false);
+
+  console.log("the recice fef event", event);
   return (
     <div className={styles.card}>
       <div className={styles.profiles}>
@@ -64,8 +66,9 @@ function EventCard({ event }) {
 
       <ViewLogsModal
         isOpen={isLogsOpen}
+        eventId={event.id}
         onClose={() => setLogsOpen(false)}
-        logs={event.logs || []}
+        selectedTimezone={selectedTimezone}
       />
     </div>
   );

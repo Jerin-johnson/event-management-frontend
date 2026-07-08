@@ -1,4 +1,6 @@
 import axios from "./AxiosInstance";
+import { formatTimezoneLabel } from "../utils/FormatTimeZone";
+
 export const getTimeZones = async () => {
   try {
     const response = await axios.get("/timezones");
@@ -8,7 +10,7 @@ export const getTimeZones = async () => {
       value: timezone,
     }));
 
-    console.log("the data", data);
+    // console.log("the data", data);
     return data;
   } catch (error) {
     const message =

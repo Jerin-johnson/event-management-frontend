@@ -14,6 +14,8 @@ function Header() {
     (state) => state.userProfile.currentProfile,
   );
 
+  console.log("the currentProfile is", currentProfile);
+
   const {
     search,
     setSearch,
