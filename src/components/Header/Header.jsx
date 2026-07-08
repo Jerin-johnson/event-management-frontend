@@ -23,6 +23,8 @@ function Header() {
           searchPlaceHolderValue="Search Profile..."
           isMulti={false}
           showAddNew={true}
+          labelKey="name"
+          valueKey="id"
           onAddNew={(name) => {
             const newProfile = { id: Date.now(), name };
             setProfiles([...profiles, newProfile]);
