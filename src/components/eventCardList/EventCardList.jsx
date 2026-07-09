@@ -4,7 +4,7 @@ import { useState } from "react";
 import EditEventModal from "../editEventModal/EditEventModal";
 import ViewLogsModal from "../viewEventLogModal/ViewEventLogModal";
 
-function EventCard({ event, selectedTimezone }) {
+function EventCard({ event, selectedTimezone, onUpdate }) {
   const [isEditOpen, setEditOpen] = useState(false);
   const [isLogsOpen, setLogsOpen] = useState(false);
 
@@ -13,7 +13,7 @@ function EventCard({ event, selectedTimezone }) {
     <div className={styles.card}>
       <div className={styles.profiles}>
         <Users className={styles.usersIcon} />
-        <span>{event.profiles.join(", ")}</span>
+        <span>{event.profileNames.join(", ")}</span>
       </div>
 
       <div className={styles.dateRow}>

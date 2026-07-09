@@ -25,3 +25,8 @@ export const getEventLogs = async (eventId) => {
   const response = await axios.get(`/events/${eventId}/logs`);
   return response.data.data;
 };
+
+export const updateEvent = async (eventId, payload) => {
+  const response = await axios.patch(`/events/${eventId}`, payload);
+  return response.data.data;
+};

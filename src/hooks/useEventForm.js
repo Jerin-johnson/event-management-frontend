@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { validateEvent } from "../validation/EventValidation";
 import { formatDateTime } from "../utils/Day";
+import { useSelector } from "react-redux";
 
 const INITIAL_FORM = {
   profiles: [],
@@ -13,10 +14,13 @@ const INITIAL_FORM = {
   endTime: "09:00",
 };
 
-export default function useEventForm({ currentProfile, createEventMutation }) {
+export default function useEventForm({ createEventMutation }) {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const currentProfile = useSelector(
+    (state) => state.userProfile.currentProfile,
+  );
 
   const updateField = useCallback((field, value) => {
     setFormData((prev) => ({
@@ -67,6 +71,13 @@ export default function useEventForm({ currentProfile, createEventMutation }) {
       return;
     }
 
+    console.log("what is current", currentProfile);
+
+    if (!currentProfile) {
+      toast.error("please select a profile");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -77,6 +88,8 @@ export default function useEventForm({ currentProfile, createEventMutation }) {
         endDateTime: formatDateTime(formData.endDate, formData.endTime),
         createdBy: currentProfile._id,
       };
+
+      console.log("the payload", payload);
 
       await createEventMutation(payload);
 
@@ -90,7 +103,7 @@ export default function useEventForm({ currentProfile, createEventMutation }) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, resetForm]);
+  }, [formData, resetForm, currentProfile, createEventMutation]);
 
   return {
     formData,

@@ -5,16 +5,12 @@ import styles from "./EditEventModal.module.css";
 import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEditEventForm from "../../hooks/useEditEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
+import { useTimeZones } from "../../hooks/useGetTimeZone";
 
 function EditEventModal({ isOpen, onClose, event, onSave }) {
-  const {
-    formData,
-    errors,
-    isSubmitting,
-    timezones,
-    updateField,
-    submitEvent,
-  } = useEditEventForm(event, onSave);
+  const { data: timezones = [] } = useTimeZones();
+  const { formData, errors, isSubmitting, updateField, submitEvent } =
+    useEditEventForm(event, onSave, timezones);
 
   const {
     search,

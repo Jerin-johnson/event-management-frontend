@@ -33,12 +33,6 @@ function EventList() {
     );
   }, [search, timezones]);
 
-  const handleUpdateEvent = (updatedEvent) => {
-    setEvents((prev) =>
-      prev.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev)),
-    );
-  };
-
   const currentProfile = useSelector(
     (state) => state.userProfile.currentProfile,
   );
@@ -47,9 +41,14 @@ function EventList() {
     data: events = [],
     isLoading: eventsLoading,
     error: eventsError,
+    refetch: refectEvents,
   } = useUserEvents(currentProfile?._id);
 
   console.log("the events is", events);
+
+  const handleUpdateEvent = (updatedEvent) => {
+    console.log("the updated events", updatedEvent);
+  };
 
   const formattedEvents = useMemo(() => {
     if (!selectedTimezone) return [];
@@ -62,19 +61,19 @@ function EventList() {
       return {
         ...event,
         id: event._id,
-        profiles: event.profiles.map((p) => p.name),
-
+        profiles: event.profiles,
+        profileNames: event.profiles.map((p) => p.name),
+        rawStartDateTime: event.startDateTime,
+        rawEndDateTime: event.endDateTime,
+        timezone: event.timezone,
         startDate: start.format("DD MMM YYYY"),
         startTime: start.format("hh:mm A"),
-
         endDate: end.format("DD MMM YYYY"),
         endTime: end.format("hh:mm A"),
-
         createdAt: dayjs
           .utc(event.createdAt)
           .tz(selectedTimezone.value)
           .format("DD MMM YYYY hh:mm A"),
-
         updatedAt: dayjs
           .utc(event.updatedAt)
           .tz(selectedTimezone.value)

@@ -1,27 +1,52 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { validateEvent } from "../validation/EventValidation";
-import { TIMEZONES } from "../constants/TimeZone";
+import dayjs from "../utils/Day";
+import { useSelector } from "react-redux";
+import { updateEvent } from "../services/Event";
+import { formatDateTime } from "../utils/Day";
 
-const buildInitialState = (event) => ({
-  selectedProfiles: event?.profiles || [],
-  selectedTimezone: event?.timezone || null,
-  startDate: event?.startDate || null,
-  startTime: event?.startTime || "09:00",
-  endDate: event?.endDate || null,
-  endTime: event?.endTime || "09:00",
-});
+const buildInitialState = (event, timezones) => {
+  if (!event) {
+    return {
+      selectedProfiles: [],
+      selectedTimezone: null,
+      startDate: null,
+      startTime: "09:00",
+      endDate: null,
+      endTime: "09:00",
+    };
+  }
 
-export default function useEditEventForm(event, onSave) {
-  const [formData, setFormData] = useState(() => buildInitialState(event));
+  const tzObj =
+    (timezones || []).find((t) => t.value === event.timezone) || null;
+  const zone = event.timezone;
+
+  const start = dayjs.utc(event.rawStartDateTime).tz(zone);
+  const end = dayjs.utc(event.rawEndDateTime).tz(zone);
+
+  return {
+    selectedProfiles: event.profiles || [],
+    selectedTimezone: tzObj,
+    startDate: start.toDate(),
+    startTime: start.format("HH:mm"),
+    endDate: end.toDate(),
+    endTime: end.format("HH:mm"),
+  };
+};
+
+export default function useEditEventForm(event, onSave, timezones) {
+  const [formData, setFormData] = useState(() =>
+    buildInitialState(event, timezones),
+  );
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const currentProfile = useSelector((s) => s.userProfile.currentProfile);
 
-  // Re-sync whenever a different event is openedediting
   useEffect(() => {
-    setFormData(buildInitialState(event));
+    setFormData(buildInitialState(event, timezones));
     setErrors({});
-  }, [event]);
+  }, [event, timezones]);
 
   const updateField = useCallback((field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -37,14 +62,20 @@ export default function useEditEventForm(event, onSave) {
       return;
     }
 
+    const payload = {
+      profiles: formData.selectedProfiles.map((p) => p._id),
+      timezone: formData.selectedTimezone.value,
+      startDateTime: formatDateTime(formData.startDate, formData.startTime),
+      endDateTime: formatDateTime(formData.endDate, formData.endTime),
+      changedBy: currentProfile?._id,
+    };
+
     try {
       setIsSubmitting(true);
 
-      await onSave({
-        ...event,
-        ...formData,
-        updatedAt: new Date().toISOString(),
-      });
+      const updated = await updateEvent(event.id, payload);
+
+      await onSave(updated);
 
       toast.success("Event updated successfully!");
     } catch (error) {
@@ -62,7 +93,6 @@ export default function useEditEventForm(event, onSave) {
     formData,
     errors,
     isSubmitting,
-    timezones: TIMEZONES,
     updateField,
     submitEvent,
   };

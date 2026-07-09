@@ -8,15 +8,10 @@ import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
-import { useSelector } from "react-redux";
 import { useCreateEvent } from "../../hooks/useCreateEvent";
 
 function EventForm() {
   const { mutateAsync: createEventMutation } = useCreateEvent();
-
-  const currentProfile = useSelector(
-    (state) => state.userProfile.currentProfile,
-  );
 
   const {
     formData,
@@ -25,7 +20,7 @@ function EventForm() {
     updateField,
     addProfile,
     submitEvent,
-  } = useEventForm({ currentProfile, createEventMutation });
+  } = useEventForm({ createEventMutation });
 
   const { data: timezones = [] } = useTimeZones();
 
