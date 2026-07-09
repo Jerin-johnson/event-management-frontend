@@ -1,4 +1,4 @@
-import Modal from "../Modal/Modal";
+import Modal from "../modal/Modal";
 import Button from "../button/Button";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import styles from "./EditEventModal.module.css";
