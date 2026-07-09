@@ -1,19 +1,77 @@
 .wrapper {
+  position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
 }
 
+.icon {
+  position: absolute;
+  left: 1rem;
+  width: 18px;
+  height: 18px;
+  color: #6b7280;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.2s;
+}
+
+.icon:hover {
+  color: #6c63ff;
+}
 .input {
   width: 100%;
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 1rem 0.85rem 2.6rem;
   border: 1.5px solid #e5e7eb;
   border-radius: 10px;
   font-size: 1rem;
   background: #f9fafb;
-  transition: border-color 0.2s;
+  color: #1f2937;
+  font-family: inherit;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.input:hover {
+  border-color: #d1d5db;
 }
 
 .input:focus {
   border-color: #6c63ff;
   outline: none;
   box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+/* --- Style the native clock icon (Chrome/Edge only) --- */
+.input::-webkit-calendar-picker-indicator {
+  filter: invert(45%) sepia(60%) saturate(500%) hue-rotate(220deg); /* tints it purple-ish */
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* --- Style the individual time segments (hour/minute/AM-PM) on hover/focus --- */
+.input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.input::-webkit-datetime-edit-hour-field:focus,
+.input::-webkit-datetime-edit-minute-field:focus,
+.input::-webkit-datetime-edit-ampm-field:focus {
+  background: #ede9fe;
+  color: #6c63ff;
+  border-radius: 4px;
+}
+
+/* Firefox fallback — limited styling support, but border/background still apply */
+@-moz-document url-prefix() {
+  .input {
+    padding: 0.85rem 1rem 0.85rem 2.6rem;
+  }
 }

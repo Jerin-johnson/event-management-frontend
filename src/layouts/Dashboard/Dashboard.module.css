@@ -1,6 +1,10 @@
 .dashboard {
-  background-color: #f8f9fa;
-  padding: 2.5rem 2rem;
+  background-color: #f5f5f5;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   font-family:
     system-ui,
     -apple-system,
@@ -14,29 +18,48 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .content {
   display: flex;
-  gap: 2rem;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
   align-items: stretch;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .content > * {
   flex: 1;
-  min-width: 300px;
+  min-width: 280px;
+  display: flex;
+  align-items: stretch;
 }
 
 @media (max-width: 1100px) {
+  .dashboard {
+    height: auto;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
   .content {
     flex-direction: column;
-    gap: 1.75rem;
+    gap: clamp(1.5rem, 3vw, 2rem);
   }
 }
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 1.5rem 1.25rem;
+    padding: clamp(1rem, 5vw, 1.5rem) clamp(0.75rem, 4vw, 1.25rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .content > * {
+    min-width: 100%;
   }
 }

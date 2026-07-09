@@ -1,47 +1,29 @@
-import { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
-import Select from "../Select/Select";
-import ProfileSelector from "../profileSelector/ProfileSelector";
 import Button from "../Button/Button";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import styles from "./EditEventModal.module.css";
-
-const TIMEZONE_OPTIONS = [
-  { label: "Eastern Time (ET)", value: "America/New_York" },
-  { label: "India (IST)", value: "Asia/Kolkata" },
-];
+import Dropdown from "../DropdownSelect/DropdownSelector";
+import useEditEventForm from "../../hooks/useEditEventForm";
+import { useProfileSelector } from "../../hooks/useProfileSelector";
+import { useTimeZones } from "../../hooks/useGetTimeZone";
 
 function EditEventModal({ isOpen, onClose, event, onSave }) {
-  const [profiles, setProfiles] = useState([]);
-  const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [startDate, setStartDate] = useState();
-  const [startTime, setStartTime] = useState("09:00");
-  const [endDate, setEndDate] = useState();
-  const [endTime, setEndTime] = useState("09:00");
+  const { data: timezones = [] } = useTimeZones();
+  const { formData, errors, isSubmitting, updateField, submitEvent } =
+    useEditEventForm(event, onSave, timezones);
 
-  useEffect(() => {
-    if (event) {
-      setProfiles(event.profiles || []);
-      setTimezone(event.timezone || TIMEZONE_OPTIONS[0].value);
-      setStartDate(event.startDate);
-      setStartTime(event.startTime || "09:00");
-      setEndDate(event.endDate);
-      setEndTime(event.endTime || "09:00");
-    }
-  }, [event]);
-
-  const handleUpdate = () => {
-    onSave({
-      ...event,
-      profiles,
-      timezone,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      updatedAt: new Date().toLocaleString(),
-    });
-  };
+  const {
+    search,
+    setSearch,
+    profiles,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    createProfile,
+  } = useProfileSelector();
 
   return (
     <Modal
@@ -50,46 +32,93 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
       title="Edit Event"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update Event
+          <Button
+            variant="primary"
+            onClick={submitEvent}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : "Update Event"}
           </Button>
         </>
       }
     >
       <div className={styles.formGroup}>
         <label>Profiles</label>
-        <ProfileSelector
-          isMultiSelect={true}
-          selectedProfiles={profiles}
-          setSelectedProfiles={setProfiles}
+        <Dropdown
+          isLoading={isLoading}
+          search={search}
+          setSearch={setSearch}
+          error={error}
+          refetch={refetch}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          options={profiles}
+          selected={formData.selectedProfiles}
+          onChange={(value) => updateField("selectedProfiles", value)}
+          placeholder="Select profiles..."
+          searchPlaceHolderValue="Search Profile..."
+          isMulti={true}
+          showAddNew={true}
+          onAddNew={(name) => createProfile({ name })}
+          labelKey="name"
+          valueKey="_id"
+          loadingText="Loading Profiles..."
+          loadingMoreText="Loading More Profiles..."
+          emptyText="No Profiles Found"
+          errorText="Unable to load profiles."
+          retryButtonText="Retry"
         />
+        {errors.selectedProfiles && (
+          <span className={styles.error}>{errors.selectedProfiles}</span>
+        )}
       </div>
 
-      <Select
-        label="Timezone"
-        options={TIMEZONE_OPTIONS}
-        value={timezone}
-        onChange={setTimezone}
-      />
+      <div className={styles.formGroup}>
+        <label>Timezone</label>
+        <Dropdown
+          options={timezones}
+          selected={formData.selectedTimezone}
+          onChange={(value) => updateField("selectedTimezone", value)}
+          placeholder="Select timezone"
+          isMulti={false}
+          labelKey="label"
+          valueKey="value"
+        />
+        {errors.selectedTimezone && (
+          <span className={styles.error}>{errors.selectedTimezone}</span>
+        )}
+      </div>
 
-      <DateTimeInput
-        label="Start Date & Time"
-        date={startDate}
-        time={startTime}
-        onDateChange={setStartDate}
-        onTimeChange={setStartTime}
-      />
+      <div className={styles.formGroup}>
+        <DateTimeInput
+          label="Start Date & Time"
+          date={formData.startDate}
+          time={formData.startTime}
+          onDateChange={(value) => updateField("startDate", value)}
+          onTimeChange={(value) => updateField("startTime", value)}
+        />
+        {errors.startDate && (
+          <span className={styles.error}>{errors.startDate}</span>
+        )}
+      </div>
 
-      <DateTimeInput
-        label="End Date & Time"
-        date={endDate}
-        time={endTime}
-        onDateChange={setEndDate}
-        onTimeChange={setEndTime}
-      />
+      <div className={styles.formGroup}>
+        <DateTimeInput
+          label="End Date & Time"
+          date={formData.endDate}
+          time={formData.endTime}
+          onDateChange={(value) => updateField("endDate", value)}
+          onTimeChange={(value) => updateField("endTime", value)}
+          minDate={formData.startDate}
+        />
+        {errors.endDate && (
+          <span className={styles.error}>{errors.endDate}</span>
+        )}
+      </div>
     </Modal>
   );
 }

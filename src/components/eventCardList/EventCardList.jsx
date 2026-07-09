@@ -4,14 +4,16 @@ import { useState } from "react";
 import EditEventModal from "../editEventModal/EditEventModal";
 import ViewLogsModal from "../viewEventLogModal/ViewEventLogModal";
 
-function EventCard({ event }) {
+function EventCard({ event, selectedTimezone, onUpdate }) {
   const [isEditOpen, setEditOpen] = useState(false);
   const [isLogsOpen, setLogsOpen] = useState(false);
+
+  console.log("the recice fef event", event);
   return (
     <div className={styles.card}>
       <div className={styles.profiles}>
         <Users className={styles.usersIcon} />
-        <span>{event.profiles.join(", ")}</span>
+        <span>{event.profileNames.join(", ")}</span>
       </div>
 
       <div className={styles.dateRow}>
@@ -64,8 +66,10 @@ function EventCard({ event }) {
 
       <ViewLogsModal
         isOpen={isLogsOpen}
+        eventId={event.id}
         onClose={() => setLogsOpen(false)}
-        logs={event.logs || []}
+        selectedTimezone={selectedTimezone}
+        profiles={event.profiles}
       />
     </div>
   );

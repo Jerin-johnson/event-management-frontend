@@ -1,60 +1,119 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "../Card/Card";
-import Select from "../Select/Select";
 import styles from "./EventList.module.css";
 import EventListCard from "../eventCardList/EventCardList";
-
-const TIMEZONE_OPTIONS = [
-  { label: "Eastern Time (ET)", value: "America/New_York" },
-  { label: "India (IST)", value: "Asia/Kolkata" },
-];
-
-const SAMPLE_EVENTS = [
-  {
-    id: 1,
-    profiles: ["anuj", "alpha"],
-    startDate: "Oct 14, 2025",
-    startTime: "11:30 PM",
-    endDate: "Oct 16, 2025",
-    endTime: "11:30 PM",
-    createdAt: "Oct 11, 2025 at 03:56 PM",
-    updatedAt: "Oct 11, 2025 at 03:56 PM",
-  },
-];
-
+import Dropdown from "../DropdownSelect/DropdownSelector";
+import { useTimeZones } from "../../hooks/useGetTimeZone";
+import { useSelector } from "react-redux";
+import { useUserEvents } from "../../hooks/useUserEvents";
+import dayjs from "../../utils/Day";
+import { useTimezoneSelector } from "../../hooks/useTimezoneSelector";
 function EventList() {
-  const [viewTimezone, setViewTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [events, setEvents] = useState(SAMPLE_EVENTS);
+  const [selectedTimezone, setSelectedTimezone] = useState(null);
+
+  const {
+    filteredTimezones,
+    timezones,
+    search,
+    setSearch,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useTimezoneSelector();
+
+  useEffect(() => {
+    if (!selectedTimezone && timezones.length > 0) {
+      setSelectedTimezone(timezones[0]);
+    }
+  }, [timezones, selectedTimezone]);
+
+  const currentProfile = useSelector(
+    (state) => state.userProfile.currentProfile,
+  );
+
+  const {
+    data: events = [],
+    isLoading: eventsLoading,
+    error: eventsError,
+    refetch: refectEvents,
+  } = useUserEvents(currentProfile?._id);
+
+  console.log("the events is", events);
 
   const handleUpdateEvent = (updatedEvent) => {
-    setEvents((prev) =>
-      prev.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev)),
-    );
+    console.log("the updated events", updatedEvent);
   };
 
+  const formattedEvents = useMemo(() => {
+    if (!selectedTimezone) return [];
+
+    return events.map((event) => {
+      const start = dayjs.utc(event.startDateTime).tz(selectedTimezone.value);
+
+      const end = dayjs.utc(event.endDateTime).tz(selectedTimezone.value);
+
+      return {
+        ...event,
+        id: event._id,
+        profiles: event.profiles,
+        profileNames: event.profiles.map((p) => p.name),
+        rawStartDateTime: event.startDateTime,
+        rawEndDateTime: event.endDateTime,
+        timezone: event.timezone,
+        startDate: start.format("DD MMM YYYY"),
+        startTime: start.format("hh:mm A"),
+        endDate: end.format("DD MMM YYYY"),
+        endTime: end.format("hh:mm A"),
+        createdAt: dayjs
+          .utc(event.createdAt)
+          .tz(selectedTimezone.value)
+          .format("DD MMM YYYY hh:mm A"),
+        updatedAt: dayjs
+          .utc(event.updatedAt)
+          .tz(selectedTimezone.value)
+          .format("DD MMM YYYY hh:mm A"),
+      };
+    });
+  }, [events, selectedTimezone]);
+
   return (
-    <Card>
+    <Card className={styles.eventsCard}>
       <h2 className={styles.title}>Events</h2>
 
       <div className={styles.formGroup}>
         <label>View in Timezone</label>
-        <Select
-          options={TIMEZONE_OPTIONS}
-          value={viewTimezone}
-          onChange={setViewTimezone}
+        <Dropdown
+          options={filteredTimezones}
+          selected={selectedTimezone}
+          onChange={setSelectedTimezone}
+          search={search}
+          setSearch={setSearch}
+          isLoading={isLoading}
+          error={isError ? error : null}
+          refetch={refetch}
+          loadingText="Loading Timezones..."
+          emptyText="No Timezones Found"
+          errorText="Unable to load timezones."
+          retryButtonText="Retry"
+          placeholder="Select Timezone"
+          searchPlaceHolderValue="Search Timezone..."
+          labelKey="label"
+          valueKey="value"
         />
       </div>
 
-      {events.length === 0 ? (
+      {formattedEvents.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.empty}>No events found.</p>
         </div>
       ) : (
-        <div className={styles.list}>
-          {events.map((event) => (
+        <div className={styles.list_container}>
+          {formattedEvents.map((event) => (
             <EventListCard
               key={event.id}
               event={event}
+              selectedTimezone={selectedTimezone}
               onUpdate={handleUpdateEvent}
             />
           ))}
