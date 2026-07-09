@@ -69,6 +69,7 @@ function EventCard({ event, selectedTimezone, onUpdate }) {
         eventId={event.id}
         onClose={() => setLogsOpen(false)}
         selectedTimezone={selectedTimezone}
+        profiles={event.profiles}
       />
     </div>
   );

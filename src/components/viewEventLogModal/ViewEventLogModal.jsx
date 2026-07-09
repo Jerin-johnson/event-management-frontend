@@ -42,9 +42,18 @@ function ViewLogsModal({ isOpen, onClose, eventId, selectedTimezone }) {
           }
 
           if (field === "profiles") {
-            previous = Array.isArray(previous) ? previous.join(", ") : "-";
+            const formatProfiles = (value) => {
+              if (!value) return "-";
 
-            current = Array.isArray(current) ? current.join(", ") : "-";
+              if (Array.isArray(value) && value[0]?.name) {
+                return value.map((p) => p.name).join(", ");
+              }
+
+              return String(value);
+            };
+
+            previous = formatProfiles(previous);
+            current = formatProfiles(current);
           }
 
           return {

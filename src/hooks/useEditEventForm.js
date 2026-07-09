@@ -3,8 +3,8 @@ import toast from "react-hot-toast";
 import { validateEvent } from "../validation/EventValidation";
 import dayjs from "../utils/Day";
 import { useSelector } from "react-redux";
-import { updateEvent } from "../services/Event";
 import { formatDateTime } from "../utils/Day";
+import { useUpdateEvent } from "./useUpdateEvent ";
 
 const buildInitialState = (event, timezones) => {
   if (!event) {
@@ -43,6 +43,10 @@ export default function useEditEventForm(event, onSave, timezones) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentProfile = useSelector((s) => s.userProfile.currentProfile);
 
+  const { mutateAsync: updateEventMutation } = useUpdateEvent(
+    currentProfile._id,
+  );
+
   useEffect(() => {
     setFormData(buildInitialState(event, timezones));
     setErrors({});
@@ -73,7 +77,10 @@ export default function useEditEventForm(event, onSave, timezones) {
     try {
       setIsSubmitting(true);
 
-      const updated = await updateEvent(event.id, payload);
+      const updated = await updateEventMutation({
+        eventId: event._id,
+        payload,
+      });
 
       await onSave(updated);
 
