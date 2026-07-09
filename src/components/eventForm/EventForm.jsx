@@ -4,7 +4,7 @@ import Button from "../Button/Button";
 import styles from "./EventForm.module.css";
 import { ChevronsUpDown } from "lucide-react";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
-import Dropdown from "../DropdownSelect/DropdownSelector";
+import Dropdown from "../dropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
