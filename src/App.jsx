@@ -1,5 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./layouts/Dashboard/Dashboard";
+import ErrorBoundary from "./components/errorBoundary/ErrorBoundary";
 
 function App() {
   return (
@@ -31,7 +32,9 @@ function App() {
           },
         }}
       />
-      <Dashboard />
+      <ErrorBoundary>
+        <Dashboard />
+      </ErrorBoundary>
     </>
   );
 }
