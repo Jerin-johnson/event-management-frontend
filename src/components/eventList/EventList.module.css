@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  /* overflow: hidden; */
 }
 
 .title {
@@ -56,4 +55,8 @@
   align-items: center;
   justify-content: center;
   color: #6b7280;
+}
+
+.profileDropdownPanel {
+  width: 60% !important;
 }

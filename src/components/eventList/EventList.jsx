@@ -100,6 +100,7 @@ function EventList() {
           searchPlaceHolderValue="Search Timezone..."
           labelKey="label"
           valueKey="value"
+          dropdownClassName={styles.profileDropdownPanel}
         />
       </div>
 

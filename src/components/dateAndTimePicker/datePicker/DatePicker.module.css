@@ -32,16 +32,26 @@
   background: #f9fafb;
   color: #1f2937;
   transition: border-color 0.2s;
-}
-
-.input::placeholder {
-  color: #9ca3af;
+  cursor: pointer;
 }
 
 .input:focus {
   border-color: #6c63ff;
   outline: none;
   box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+.container:hover .input {
+  background-color: #6c63ff;
+  color: #fff;
+
+  &::placeholder {
+    color: #fff;
+  }
+}
+
+.container:hover .icon {
+  color: #fff;
 }
 
 .popper {

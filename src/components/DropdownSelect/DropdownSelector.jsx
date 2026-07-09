@@ -5,6 +5,7 @@ import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import ErrorState from "../uiState/ErrorState";
 import LoadingState from "../uiState/LoadingState";
 import EmptyState from "../uiState/EmptyState";
+import { useState } from "react";
 
 function Dropdown({
   fetchNextPage,
@@ -55,6 +56,8 @@ function Dropdown({
     labelKey,
     valueKey,
   });
+
+  const [activeId, setActiveId] = useState(null);
 
   const lastItemRef = useIntersectionObserver({
     enabled: hasNextPage && !isFetchingNextPage,
@@ -109,11 +112,12 @@ function Dropdown({
 
                   return (
                     <div
+                      onMouseEnter={() => setActiveId(item[valueKey])}
                       key={item[valueKey]}
                       ref={isLast ? lastItemRef : null}
                       className={`${styles.option} ${
                         isSelected ? styles.optionSelected : ""
-                      }`}
+                      } ${activeId === item[valueKey] ? styles.optionHovered : ""}`}
                       onClick={() => toggleOption(item)}
                     >
                       <span className={styles.optionText}>

@@ -65,8 +65,8 @@
   border-radius: 10px;
 }
 
-.profileDropdownHalfWidth {
-  width: 50% !important;
+.profileDropdownPanel {
+  width: 60% !important;
 }
 
 .error {

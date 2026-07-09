@@ -74,6 +74,7 @@ function EventForm() {
             emptyText="No Profiles Found"
             errorText="Unable to load profiles."
             retryButtonText="Retry"
+            dropdownClassName={styles.profileDropdownPanel}
           />
           {errors.selectedProfiles && (
             <span className={styles.error}>{errors.selectedProfiles}</span>
@@ -97,6 +98,7 @@ function EventForm() {
             retryButtonText="Retry"
             labelKey="label"
             valueKey="value"
+            dropdownClassName={styles.profileDropdownPanel}
           />
 
           {errors.selectedTimezone && (

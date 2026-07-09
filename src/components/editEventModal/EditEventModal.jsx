@@ -6,9 +6,16 @@ import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEditEventForm from "../../hooks/useEditEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
+import { useTimezoneSelector } from "../../hooks/useTimezoneSelector";
 
 function EditEventModal({ isOpen, onClose, event, onSave }) {
-  const { data: timezones = [] } = useTimeZones();
+  const {
+    filteredTimezones,
+    timezones,
+    search: timeZoneSearch,
+    setSearch: setTimeZoneSearch,
+  } = useTimezoneSelector();
+
   const { formData, errors, isSubmitting, updateField, submitEvent } =
     useEditEventForm(event, onSave, timezones);
 
@@ -71,6 +78,7 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
           emptyText="No Profiles Found"
           errorText="Unable to load profiles."
           retryButtonText="Retry"
+          dropdownClassName={styles.profileDropdownPanel}
         />
         {errors.selectedProfiles && (
           <span className={styles.error}>{errors.selectedProfiles}</span>
@@ -80,13 +88,18 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
       <div className={styles.formGroup}>
         <label>Timezone</label>
         <Dropdown
-          options={timezones}
+          options={filteredTimezones}
           selected={formData.selectedTimezone}
           onChange={(value) => updateField("selectedTimezone", value)}
+          search={timeZoneSearch}
+          setSearch={setTimeZoneSearch}
+          options={timezones}
+          selected={formData.selectedTimezone}
           placeholder="Select timezone"
           isMulti={false}
           labelKey="label"
           valueKey="value"
+          dropdownClassName={styles.profileDropdownPanel}
         />
         {errors.selectedTimezone && (
           <span className={styles.error}>{errors.selectedTimezone}</span>

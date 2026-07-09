@@ -8,7 +8,7 @@
   padding: 0.85rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  background: white;
+  background: #f9fafb;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,10 +18,14 @@
   transition: all 0.2s ease;
 }
 
-.trigger:hover {
+.container:hover .trigger {
   background: #6c63ff;
   border-color: #6c63ff;
   color: white;
+}
+
+.container:hover .chevron {
+  color: #fff;
 }
 
 .triggerActive {
@@ -44,6 +48,10 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
   z-index: 9999;
   overflow: hidden;
+}
+
+.dropdownCompact {
+  width: 60%;
 }
 
 .searchContainer {
@@ -93,10 +101,6 @@
   color: white;
 }
 
-.optionSelected {
-  background: #f3f4f6;
-}
-
 .optionText {
   display: flex;
   align-items: center;
@@ -126,7 +130,8 @@
 }
 
 .addNewButton:hover {
-  background: #f3f4f6;
+  background: #6c63ff;
+  color: #fff;
 }
 
 .addNewInputContainer {
