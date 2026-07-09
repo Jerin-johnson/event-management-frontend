@@ -117,7 +117,7 @@ function Dropdown({
                       onClick={() => toggleOption(item)}
                     >
                       <span className={styles.optionText}>
-                        {isSelected && isMulti && (
+                        {isSelected && (
                           <CheckIcon className={styles.checkIcon} />
                         )}
 

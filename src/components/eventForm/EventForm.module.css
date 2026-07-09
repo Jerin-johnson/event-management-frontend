@@ -1,9 +1,13 @@
-title {
+.formCard {
+  align-self: flex-start;
+  height: auto;
+}
+
+.title {
   margin-bottom: 1.8rem;
   font-size: 1.55rem;
   font-weight: 700;
   color: #1f2937;
-  flex-shrink: 0;
 }
 
 .form {
@@ -60,6 +64,7 @@ title {
   font-size: 1.1rem;
   border-radius: 10px;
 }
+
 .profileDropdownHalfWidth {
   width: 50% !important;
 }

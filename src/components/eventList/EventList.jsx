@@ -108,7 +108,7 @@ function EventList() {
           <p className={styles.empty}>No events found.</p>
         </div>
       ) : (
-        <div className={styles.list}>
+        <div className={styles.list_container}>
           {formattedEvents.map((event) => (
             <EventListCard
               key={event.id}
