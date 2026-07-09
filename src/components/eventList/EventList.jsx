@@ -7,31 +7,26 @@ import { useTimeZones } from "../../hooks/useGetTimeZone";
 import { useSelector } from "react-redux";
 import { useUserEvents } from "../../hooks/useUserEvents";
 import dayjs from "../../utils/Day";
+import { useTimezoneSelector } from "../../hooks/useTimezoneSelector";
 function EventList() {
   const [selectedTimezone, setSelectedTimezone] = useState(null);
-  const [search, setSearch] = useState("");
 
   const {
-    data: timezones = [],
+    filteredTimezones,
+    timezones,
+    search,
+    setSearch,
     isLoading,
     isError,
     error,
     refetch,
-  } = useTimeZones();
+  } = useTimezoneSelector();
 
   useEffect(() => {
     if (!selectedTimezone && timezones.length > 0) {
       setSelectedTimezone(timezones[0]);
     }
   }, [timezones, selectedTimezone]);
-
-  const filteredTimezones = useMemo(() => {
-    if (!search.trim()) return timezones;
-
-    return timezones.filter((timezone) =>
-      timezone.label.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [search, timezones]);
 
   const currentProfile = useSelector(
     (state) => state.userProfile.currentProfile,
@@ -83,7 +78,7 @@ function EventList() {
   }, [events, selectedTimezone]);
 
   return (
-    <Card>
+    <Card className={styles.eventsCard}>
       <h2 className={styles.title}>Events</h2>
 
       <div className={styles.formGroup}>

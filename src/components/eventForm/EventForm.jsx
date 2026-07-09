@@ -9,6 +9,7 @@ import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
 import { useCreateEvent } from "../../hooks/useCreateEvent";
+import { useTimezoneSelector } from "../../hooks/useTimezoneSelector";
 
 function EventForm() {
   const { mutateAsync: createEventMutation } = useCreateEvent();
@@ -22,7 +23,12 @@ function EventForm() {
     submitEvent,
   } = useEventForm({ createEventMutation });
 
-  const { data: timezones = [] } = useTimeZones();
+  const {
+    filteredTimezones,
+    timezones,
+    search: timeZoneSearch,
+    setSearch: setTimeZoneSearch,
+  } = useTimezoneSelector();
 
   const {
     search,
@@ -78,10 +84,17 @@ function EventForm() {
           <label>Timezone</label>
 
           <Dropdown
-            options={timezones}
+            options={filteredTimezones}
             selected={formData.selectedTimezone}
             onChange={(value) => updateField("selectedTimezone", value)}
+            search={timeZoneSearch}
+            setSearch={setTimeZoneSearch}
             placeholder="Select timezone"
+            searchPlaceHolderValue="Search Timezone..."
+            loadingText="Loading Timezones..."
+            emptyText="No Timezones Found"
+            errorText="Unable to load timezones."
+            retryButtonText="Retry"
             labelKey="label"
             valueKey="value"
           />
@@ -112,6 +125,7 @@ function EventForm() {
             time={formData.endTime}
             onDateChange={(value) => updateField("endDate", value)}
             onTimeChange={(value) => updateField("endTime", value)}
+            minDate={formData.startDate}
           />
 
           {errors.endDate && (

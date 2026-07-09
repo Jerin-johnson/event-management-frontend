@@ -113,6 +113,7 @@ function EditEventModal({ isOpen, onClose, event, onSave }) {
           time={formData.endTime}
           onDateChange={(value) => updateField("endDate", value)}
           onTimeChange={(value) => updateField("endTime", value)}
+          minDate={formData.startDate}
         />
         {errors.endDate && (
           <span className={styles.error}>{errors.endDate}</span>

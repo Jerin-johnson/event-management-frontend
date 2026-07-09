@@ -1,14 +1,16 @@
-.title {
+title {
   margin-bottom: 1.8rem;
   font-size: 1.55rem;
   font-weight: 700;
   color: #1f2937;
+  flex-shrink: 0;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  flex: 1;
 }
 
 .formGroup {
@@ -46,13 +48,18 @@
   flex: 1;
 }
 
+@media (max-width: 480px) {
+  .dateTimeRow {
+    flex-direction: column;
+  }
+}
+
 .createBtn {
-  margin-top: 0.8rem;
+  margin-top: auto;
   padding: 1rem;
   font-size: 1.1rem;
   border-radius: 10px;
 }
-
 .profileDropdownHalfWidth {
   width: 50% !important;
 }
