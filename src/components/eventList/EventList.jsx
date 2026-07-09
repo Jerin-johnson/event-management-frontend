@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import Card from "../Card/Card";
+import Card from "../card/Card";
 import styles from "./EventList.module.css";
 import EventListCard from "../eventCardList/EventCardList";
-import Dropdown from "../dropdownSelect/DropdownSelector";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
 import { useSelector } from "react-redux";
 import { useUserEvents } from "../../hooks/useUserEvents";

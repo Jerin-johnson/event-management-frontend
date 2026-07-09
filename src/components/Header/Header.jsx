@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import Dropdown from "../dropdownSelect/DropdownSelector";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 import styles from "./Header.module.css";
 import { useState } from "react";
 import useDebounce from "../../hooks/useDebounce";

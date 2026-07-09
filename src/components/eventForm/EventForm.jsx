@@ -1,10 +1,10 @@
 import { useState } from "react";
-import Card from "../Card/Card";
-import Button from "../Button/Button";
+import Card from "../card/Card";
+import Button from "../button/Button";
 import styles from "./EventForm.module.css";
 import { ChevronsUpDown } from "lucide-react";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
-import Dropdown from "../dropdownSelect/DropdownSelector";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEventForm from "../../hooks/useEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";

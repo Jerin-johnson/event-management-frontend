@@ -2,7 +2,7 @@ import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
 import DateTimeInput from "../dateAndTimePicker/dataTimePicker/DateTimeInput";
 import styles from "./EditEventModal.module.css";
-import Dropdown from "../dropdownSelect/DropdownSelector";
+import Dropdown from "../DropdownSelect/DropdownSelector";
 import useEditEventForm from "../../hooks/useEditEventForm";
 import { useProfileSelector } from "../../hooks/useProfileSelector";
 import { useTimeZones } from "../../hooks/useGetTimeZone";
